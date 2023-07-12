@@ -1,0 +1,295 @@
+.card {
+    height: 100vh;
+    width: 42vh;
+  }
+  .container1:hover{
+    box-shadow: 2px 2px 8px rgba(0, 0, 255, 0.454);
+    transition: 0.6s;
+    cursor: pointer;
+  }
+  .container1{
+    background-color: #f3f2f2 !important;
+    border: none !important;
+    box-shadow: 9px 2px 20px rgba(176, 176, 176, 0.537);
+    border-radius: 10px 40px !important;
+  }
+
+  .row {
+    row-gap: 100px;
+  }
+  
+  #image{
+    height: 150px;
+    width: 150px;
+  }
+  .card-img-top {
+    object-fit: cover;
+  }
+  
+  .heart-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 25px;
+  }
+  
+  .card + .btn {
+    margin-top: 10px;
+  }
+  
+  .card {
+    overflow: visible;
+    background-color: grey;
+  }
+  .card-image {
+  position: relative;
+  top: -25%; 
+  z-index: 1;
+}
+
+  
+  .card-image img {
+    width: 7.5rem;
+    height: 7.5rem;
+    margin-top: -5rem;
+  }
+  
+  .card-body {
+    text-align: center;
+  }
+  
+  .card-text {
+    font-size: smaller;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .price {
+    font-weight: bold;
+  }
+  
+  .quantity-input {
+    display: flex;
+  }
+  
+  .quantity-input input {
+    width: 40px;
+  }
+  
+  .cart-button {
+    background-color: #f9f6ff;
+    color: black;
+  }
+  
+  .increment-decrement-button {
+    background-color: lightblue;
+  }
+  
+
+
+.quantity-form input {
+  width: 30px;
+  border: none;
+  height: 30px;
+  background-color: rgb(168, 168, 168);
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.decrement1{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+
+}
+.increment1{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+}
+
+.increment-decrement-button {
+  background-color: rgb(168, 168, 168);
+  width: 20px;
+  height: 30px;
+  border: none;
+}
+
+.cart1{
+  background-color: #5928c4 !important;
+  color: white !important;
+  height: 30px;
+  text-align: center;
+  padding-bottom: 10px !important;
+
+}
+
+#heading{
+  background: -webkit-linear-gradient(#3a0091, #f200f6b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+
+  
+}
+  .popup {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .popup-content {
+    position: relative;
+    background-color: #fefefe;
+    border-radius: 0px 20px;
+    margin: 5% auto;
+    border: 1px solid #888;
+    width: 80%;
+    padding: 20px;
+
+    opacity: 0;
+    transform: translateY(-100px);
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+  }
+  
+  .popup.show .popup-content {
+      opacity: 1;
+      transform: translateY(0);
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaaaaa;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  #img{
+    width: 300px;
+  }
+
+  .popup-content {
+    display: flex;
+  }
+
+  .popup-image {
+    flex: 1;
+  }
+
+  .popup-image img {
+    max-width: 100%;
+  }
+
+  .popup-details {
+    flex: 1;
+    padding-left: 20px;
+  }
+
+  .popup-details h2 {
+    font-weight: bold;
+  }
+
+  #des{
+    text-align: justify;
+  }
+
+  #head{
+    text-align: justify;
+  }
+  .popup-details button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .popup-details button:first-of-type {
+    background-color: yellow;
+    float: left;
+    border-radius: 11px;
+    width: 140px;
+  }
+  
+  .popup-details button:last-of-type {
+    background-color: rgb(0, 90, 121);
+    border-radius: 11px;
+    color:white;
+    width: 140px;
+
+  }
+  
+  .strikethrough-price {
+    text-decoration: line-through;
+    font-size: 14px;
+    text-align: justify;
+
+  }
+  
+  .price {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: justify;
+  }
+  
+  .price1{
+    font-size: 37px;
+    font-weight: bold;
+    text-align: justify;
+  }
+  .offer-link {
+    color: #535353af;
+    font-weight: lighter;
+    text-decoration: none;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: justify;
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    font-size: 16px;
+    
+  }
+  .offer-link:hover{
+    color: blue;
+    text-decoration:underline !important;
+  }
+  .green-icon {
+    color: green;
+  }
+  
+  .popup-image {
+    width: 400px;
+    height: 400px;
+  }
+  
+
+  footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    margin-top:100px;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  

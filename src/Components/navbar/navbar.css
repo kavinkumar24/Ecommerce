@@ -1,0 +1,40 @@
+
+  .nav-link:hover{
+    border-radius: 10px;
+
+    background-color: rgba(128, 128, 128, 0.607);
+  }
+#Navbar1{
+    background-color: rgb(239, 239, 239);
+    box-shadow: 10px 2px 20px rgb(197, 197, 197);
+  }
+.greet{
+  font-size: 36px;
+  color: blue;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  background: linear-gradient(to right, rgb(0, 104, 73), rgb(232, 21, 225));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.search_btn{
+  background-color: rgba(0, 0, 0, 0.772) !important;
+  border: white !important;
+  border-radius: none !important;
+}
+
+@media (max-width:768px) {
+  #Navbar1 {
+    width: 100% !important;
+  }
+  #form_search{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    left: unset !important;
+  }
+}
+
