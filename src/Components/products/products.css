@@ -708,12 +708,13 @@ margin-top: 10px;
   top:85px;
   color: black;
   width: 500px;
-  z-index: 999;
+  z-index: 9;
   padding: 10px;
 }
 .topnav .btn1{
   background: transparent;
   color: black;
+  z-index: -99999999 !important;
   border: 1px solid lightgrey;
 }
 @media (min-width: 576px) {

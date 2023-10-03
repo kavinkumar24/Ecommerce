@@ -21,10 +21,15 @@
     background-color:#ffffff;
     border-radius: 4px;
     box-shadow: 1px 1px 4px rgb(149, 149, 149);
-
-
     padding: 20px;
   }
+  @media screen and (max-width: 768px) {
+    .contact-form {
+      width: 440px !important;
+      left:-30px !important;
+    }
+  }
+  
   
   .contact-form label {
     display: block;

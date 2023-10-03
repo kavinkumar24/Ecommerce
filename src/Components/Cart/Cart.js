@@ -46,7 +46,7 @@ function Cart({ cartItems, setCartItems }) {
     <>
      <NavigationBar uniqueItems={uniqueItems} cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} showImageContainer={false} />
       
-     <button onClick={clearCart} style={{position:'absolute',top:'100px',zIndex:'99',backgroundColor:'#089b7d',border:'none',color:'white',padding:'7px',borderRadius:'8px'}}>Clear Cart</button>
+     <button onClick={clearCart} style={{position:'absolute',top:'100px',zIndex:'9',backgroundColor:'#089b7d',border:'none',color:'white',padding:'7px',borderRadius:'8px'}}>Clear</button>
 
      <div className="container-fluid" style={{position:'relative',top:'23px'}}>
     <h3 id="heading1">Check it out</h3>

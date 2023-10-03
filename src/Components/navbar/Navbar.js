@@ -232,7 +232,7 @@ const closeModal = () => {
   return (
     <>
       <Navbar collapseOnSelect expand="lg" variant="light" id='Navbar1'>
-        <Navbar.Brand href="#home"><img src={Logo} alt='logo' id="logo"/></Navbar.Brand>
+        <Navbar.Brand as={RouterLink} to="/"><img src={Logo} alt='logo' id="logo"/></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
@@ -269,7 +269,7 @@ const closeModal = () => {
   <Button id="button" onClick={openModal}>Join</Button>
 
   <Nav.Link as={RouterLink} to="/cart" className='cart'>
-              Cart<i class="fa fa-shopping-cart cart_icon"></i>
+              <i class="fa fa-shopping-cart cart_icon"></i>
               {itemCount > 0 && (
                 <span style={{
                   position: 'relative',
