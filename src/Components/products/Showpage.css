@@ -1,0 +1,46 @@
+.newPageContainer {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-gap: 20px;
+    height: 100vh;
+}
+
+.firstColumn {
+    background-color:#ffffff; 
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 1px 1px 4px rgb(149, 149, 149);
+}
+
+.shop_container{
+    width: 200px !important;
+    margin: 1px !important;
+}
+#shopimage{
+    width: 170px !important;
+    height: 7.5rem;
+    margin-top: -5rem;
+}
+.row-cols-md-4 {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+.secondColumn {
+    background-color:#ffffff; 
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 1px 1px 4px rgb(149, 149, 149);
+
+}
+
+.shop-page {
+    display: flex;
+    flex-direction: column;
+    background-color: #f3f4f6;
+    height: 106vh !important;
+    padding: 20px;
+    position: relative;
+    top:100px;
+  }
+  

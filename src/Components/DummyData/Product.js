@@ -1,95 +1,111 @@
-import Chair1 from './ProductImages/char1.png'
-import Chair2 from './ProductImages/sofa.png'
-import Chair3 from './ProductImages/chair3.png'
-import Chair4 from './ProductImages/chair4.png'
-import Chair5 from './ProductImages/chair5.webp'
-import Chair6 from './ProductImages/chair6.png'
-import Chair7 from './ProductImages/chair7.png'
-import Chair8 from './ProductImages/chair8.png'
+import fruit1 from '../images/Fruits/apple-2.webp'
+import fruit1_i from '../images/Fruits/apple-1.webp'
+import fruit1_ii from '../images/Fruits/apple.webp'
+import fruit2 from '../images/Fruits/Clementines-1.webp'
+import fruit2_i from '../images/Fruits/Clementines.webp'
+import fruit2_ii from '../images/Fruits/Clementines-2.webp'
+import fruit3 from '../images/Fruits/Bluberries.webp'
+import fruit3_i from '../images/Fruits/blueberries_relyfn.webp'
+import fruit3_ii from '../images/Fruits/Bluberries-2.webp'
+import fruit4 from '../images/Fruits/Brussels-Sprout.webp'
+import fruit4_i from '../images/Fruits/Brussels-Sprout-1.webp'
+import fruit4_ii from '../images/Fruits/Brussels-Sprout-2.webp'
+import fruit5 from '../images/Fruits/lime-1.webp'
+import fruit5_i from '../images/Fruits/lime.webp'
+import fruit5_ii from '../images/Fruits/lime-2.webp'
+import fruit6 from '../images/Fruits/FrenchGreenBeans_azivow.webp'
+import fruit6_i from '../images/Fruits/French-Green-Beans-1.webp'
+import fruit6_ii from '../images/Fruits/French-Green-Beans-2.webp'
+import fruit7 from '../images/Fruits/strawberry.webp'
+
 
 
 const Product = {
     "products": [
       {
         "id": 1,
-        "title": "Throne",
-        "description": "It is a type of chair that a king, queen, sovereign, or other highly dignified officials uses",
-        "image": Chair1,
-        "price": 1000,
-        "strikethroughPrice":10000,
+        "title": "Apples",
+        "description": "An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple trees are ... The skin of ripe apples is generally red, yellow, green, pink, or russetted, though many bi- or tri-colored cultivars may be found.",
+        "details":"An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple trees are ... The skin of ripe apples is generally red, yellow, green, pink, or russetted, though many bi- or tri-colored cultivars may be found.",
+        "image": fruit1,
+        "slide1":fruit1_i,
+        "slide2":fruit1_ii,
+        "price": 140,
+        "available":100,
+        "strikethroughPrice":160,
+        
 
       },
       {
         "id": 2,
-        "title": "Sofa",
-        "description": "Also known as a couch or a futon, the sofa is a furniture used by people for seating",
-        "image": Chair2,
-        "price": 3000,
-        "strikethroughPrice":10000,
+        "title":"Clementines",
+        "description": "clementine is a tangor, a citrus fruit hybrid between a willowleaf mandarin orange and a sweet orange, named for its late 19th-century discoverer. The exterior is a deep orange colour with a smooth, glossy appearance",
+        "details":"clementine is a tangor, a citrus fruit hybrid between a willowleaf mandarin orange and a sweet orange, named for its late 19th-century discoverer. The exterior is a deep orange colour with a smooth, glossy appearance.",
+        "image": fruit2,
+        "slide1":fruit2_i,
+        "slide2":fruit2_ii,
+        "price": 150,
+        "strikethroughPrice":200,
 
       },
       {
         "id": 3,
-        "title": "High chair",
-        "description": "It is a furniture which is toddlers, and older babies use for eating, it is a mulit purpose",
-        "image": Chair3,
-        "price": 2399,
-        "strikethroughPrice":8000,
+        "title": "Blueberries",
+        "description": "Blueberries are perennial flowering plants with blue or purple berries. They are classified in the section Cyanococcus within the genus Vaccinium. Vaccinium also includes cranberries, bilberries, huckleberries and Madeira blueberries. Commercial blueberries—both wild and cultivated —are all native to North America.",
+        "details":"Blueberries are perennial flowering plants with blue or purple berries. They are classified in the section Cyanococcus within the genus Vaccinium. Vaccinium also includes cranberries, bilberries, huckleberries and Madeira blueberries. Commercial blueberries—both wild and cultivated —are all native to North America.",
+        "image": fruit3,
+        "slide1":fruit3_i,
+        "slide2":fruit3_ii,
+        "price": 200,
+        "strikethroughPrice":220,
 
       },
       {
         "id": 4,
-        "title": "Executive chair",
-        "description": "It is a type of long seat,These chairs have a tall back and are incredibly comfortable",
-        "image": Chair4,
-        "price": 1999,
-        "strikethroughPrice":3000,
+        "title": "Brussels Sprout",
+        "description": "The Brussels sprout is a member of the Gemmifera Group of cabbages, grown for its edible buds. The leaf vegetables are typically 1.5–4.0 cm in diameter and look like miniature cabbages. The Brussels sprout has long been popular in Brussels, Belgium, and may have gained its name there.",
+        "details":"The Brussels sprout is a member of the Gemmifera Group of cabbages, grown for its edible buds. The leaf vegetables are typically 1.5–4.0 cm in diameter and look like miniature cabbages. The Brussels sprout has long been popular in Brussels, Belgium, and may have gained its name there.",
+        "image": fruit4,
+        "slide1":fruit4_i,
+        "slide2":fruit4_ii,
+        "price": 190,
+        "strikethroughPrice":210,
 
       },
       {
         "id": 5,
-        "title": "Tulip chair",
-        "description": " It is a type of armchair. Cast aluminum is used to create the base of the chair.",
-        "image": Chair5,
-        "price": 1999,
-        "strikethroughPrice":2799,
+        "title": "Lime",
+        "description": "The lemon/lime, Citrus limon Osbeck, is a species of small evergreen tree in the flowering plant family Rutaceae, native to South Asia, primarily North eastern India.",
+        "details":"The lemon/lime, Citrus limon Osbeck, is a species of small evergreen tree in the flowering plant family Rutaceae, native to South Asia, primarily North eastern India.",
+        "image": fruit5,
+        "slide1":fruit5_i,
+        "slide2":fruit5_ii,
+        "price": 120,
+        "strikethroughPrice":130,
 
       },
       {
         "id": 6,
-        "title": "Park bench",
-        "description": "It is a type of bench that can be found in public parks. Usually made up of wood",
-        "image": Chair6,
-        "price": 1799,
-        "strikethroughPrice":3500,
+        "title": "Green Beans",
+        "description": "Green beans are the unripe, young fruit and protective pods of various cultivars of the common bean. Immature or young pods of the runner bean, yardlong bean, and hyacinth bean are used in a similar way.",
+        "details":"Green beans are the unripe, young fruit and protective pods of various cultivars of the common bean. Immature or young pods of the runner bean, yardlong bean, and hyacinth bean are used in a similar way.",
+        "image": fruit6,
+        "slide1":fruit6_i,
+        "slide2":fruit6_ii,
+        "price": 199,
+        "strikethroughPrice":250,
       },
       {
         "id": 7,
-        "title": "Dressing table",
-        "description": "It is a type of table used for makeup and also store many things,made up of wood",
-        "image": 'https://www.pngall.com/wp-content/uploads/2016/06/Furniture-PNG.png',
+        "title": "Strawberry",
+        "description": "The garden strawberry is a widely grown hybrid species of the genus Fragaria, collectively known as the strawberries, which are cultivated worldwide for their fruit. The fruit is widely appreciated for its characteristic aroma, bright red color, juicy texture, and sweetness.",
+        "details":"The garden strawberry is a widely grown hybrid species of the genus Fragaria, collectively known as the strawberries, which are cultivated worldwide for their fruit. The fruit is widely appreciated for its characteristic aroma, bright red color, juicy texture, and sweetness.",
+        "image": fruit7,
         "price": 2799,
         "strikethroughPrice":3000,
 
       },
-      {
-        "id": 8,
-        "title": "Garden chair",
-        "description": "It is a type of chair which is designed for use outside. It has support for the back",
-        "image": 'https://www.pngall.com/wp-content/uploads/2016/06/Furniture-PNG-Image.png',
-        "price": 1599,
-        "strikethroughPrice":4000,
-
-      },
-      {
-        "id": 9,
-        "title": "Smart Sofa",
-        "description": "It is a type of sofa with modern look, with better cushion",
-        "image": 'https://www.pngarts.com/files/7/Modern-Furniture-Transparent-Background-PNG.png',
-        "price": 1799,
-        "strikethroughPrice":4000,
-
-      }
+      
     ]
   }
   

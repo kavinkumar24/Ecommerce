@@ -80,7 +80,8 @@ const paymentMethods = [
   }
 
   return (
-    <> <NavigationBar cartItems={cartItems} showSlideshow={false} showHeader={false} showDropdown={false} />
+    <>
+     {/* <NavigationBar cartItems={cartItems} showSlideshow={false} showHeader={false} showDropdown={false} /> */}
     
     <div className="form-container" id="container1" style={{ height: '100vh', width: '100%' }}>
       <br></br>

@@ -55,7 +55,7 @@
 }
 
 #input {
-    background-color: #ebf5fc;
+    background-color: #f1f1f1b7;
 }
 #items {
     background-color: #005566d7;
@@ -67,9 +67,7 @@
   background-color: #d5e8f0;
 
 }
-#container1 {
-    background-color: #fcebf577
-}
+
 body {
   margin: 0;
   padding: 0;

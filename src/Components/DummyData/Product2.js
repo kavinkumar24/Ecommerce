@@ -1,49 +1,98 @@
-import mobile1 from './ProductImages/mobile1.png'
-import mobile2 from './ProductImages/mobile2.png'
-import S1 from './ProductImages/s1.png'
-import S2 from './ProductImages/s2.png'
+
+import bis1 from '../images/Biscuits/belmont_custard_cream.webp'
+import bis2 from '../images/Biscuits/crawford_digestives.webp'
+import bis3 from '../images/Biscuits/crawford_shortie.webp'
+import bis4 from '../images/Biscuits/Hill_Biscuits_Mini_Pack_Mix_.webp'
+import bis5 from '../images/Biscuits/Jammie_Dodgers.webp'
+import bis6 from '../images/Biscuits/julis_cheese_crackers.webp'
+import bis7 from '../images/Biscuits/khong_guan_orange_cream.webp'
 
 const Product2={
     "products": [
         {
-          "id": 17,
-          "title": "Iphone 14 Pro Max",
-          "description": "It is best mobile for camera and for security purpose",
-          "image":mobile1,
-          "price": 70000,
-          "strikethroughPrice":100000,
+          "id": 20,
+          "title": "Belmont Custard Cream",
+          "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+          "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+          "image":bis1,
+          "price": 20,
+          "strikethroughPrice":30,
   
         },
 
         {
-            "id": 18,
-            "title": "Iphone 14 Pro Max",
-            "description": "It is best mobile for camera and for security purpose",
-            "image":mobile2,
-            "price": 60000,
-            "strikethroughPrice":90000,
+            "id": 21,
+            "title": "Crawford Digestives",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+            "image":bis2,
+            "price": 40,
+            "strikethroughPrice":45,
     
           },
 
           {
-            "id": 19,
-            "title": "Samsung S23 ultra",
-            "description": "It is best mobile for office and it has some improvised quality compared",
-            "image":S1,
-            "price": 120000,
-            "strikethroughPrice":90000,
+            "id": 22,
+            "title": "Crawford Shortie",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+            "image":bis3,
+            "price": 20,
+            "strikethroughPrice":25,
     
           },
 
           {
-            "id": 20,
-            "title": "Samsung S22 ultra",
-            "description": "It is best mobile office and camera purpose",
-            "image":S2,
-            "price": 90000,
-            "strikethroughPrice":110000,
+            "id": 23,
+            "title": "Hill Mini Pack Mix",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "image":bis4,
+            "price": 10,
+            "strikethroughPrice":20,
     
           },
+
+          {
+            "id": 24,
+            "title": "Jammie Dodgers Raspberry",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "image":bis5,
+            "price": 25,
+            "strikethroughPrice":35,
+    
+          },
+          {
+            "id": 25,
+            "title": "Juli S Cheese Crackers",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+            "image":bis6,
+            "price": 30,
+            "strikethroughPrice":35,
+    
+          },
+
+          {
+            "id": 26,
+            "title": "Khong Guan Orange Cream",
+            "description": "A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+
+            "details":"A biscuit is a flour-based baked food product. This article covers the type of biscuit found in Africa, Asia, and Europe, which is typically hard, flat, and unleavened.",
+            "image":bis7,
+            "price": 50,
+            "strikethroughPrice":55,
+    
+          },
+
+          
     ],
 
     "laptops":[
