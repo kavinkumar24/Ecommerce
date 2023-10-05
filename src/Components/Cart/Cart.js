@@ -10,7 +10,7 @@ import Draggable from 'react-draggable';
 function Cart({ cartItems, setCartItems }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showSpinner, setShowSpinner] = useState(false);
-  const total = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const total = cartItems.reduce((acc, item) => acc + item.prize, 0);
 
   const itemCounts = {};
   cartItems.forEach(item => {
@@ -62,9 +62,9 @@ function Cart({ cartItems, setCartItems }) {
                   <div style={{ display: 'flex' }}>
                     <img src={item.image} alt={item.title} style={{ width: '100px', height: '100px' }} />
                     <div style={{ marginLeft: '10px' }}>
-                      <h5 style={{ marginTop: '20px', textAlign: 'left', fontWeight: 'bold' }}>{item.title}</h5>
+                      <h5 style={{ marginTop: '20px', textAlign: 'left', fontWeight: 'bold' }}>{item.name}</h5>
                       <p style={{ textAlign: 'left' }}>Price:
-                        ₹{item.price}</p>
+                        ₹{item.prize}</p>
                     </div>
                     <div style={{ marginLeft: 'auto' }}>
                       <p>Quanity: {itemCounts[item.id]}</p>
@@ -85,8 +85,8 @@ function Cart({ cartItems, setCartItems }) {
           <h4>Bill</h4>
           {uniqueItems.map(item => (
             <div key={item.id} style={{ display: 'flex', color:'black',justifyContent: 'space-between', marginBottom: '20px' }}>
-              <span>{item.title}</span>
-              <span>₹{item.price * itemCounts[item.id]}</span>
+              <span>{item.name}</span>
+              <span>₹{item.prize * itemCounts[item.id]}</span>
             </div>
           ))}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px',fontSize:'20px',fontWeight:'bolder'}} >

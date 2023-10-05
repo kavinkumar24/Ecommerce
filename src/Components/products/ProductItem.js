@@ -22,8 +22,48 @@ import AppleIcon from '@mui/icons-material/Apple';
 import Carousel from 'react-bootstrap/Carousel';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { gql, useQuery } from "@apollo/client";
 
 const Products = ({ cartItems, setCartItems}) => {
+
+  const GET_SECONDARY_CATEGORIES = gql`
+  query Products($filter: productfilter) {
+    products(filter: $filter) {
+      category
+      categoryId
+      description
+      discount
+      id
+      name
+      prize
+      quantity {
+        quantity
+      }
+    }
+  } 
+    `;
+    const{
+      loading:categoryLoading,
+      error:categoryError,
+      data:categoryData,
+      refetch:categoryRefetch,
+    }= useQuery(GET_SECONDARY_CATEGORIES,{
+      variables:{
+        "filter": {
+          "categoryId": 19,
+          "shopId": 1000,
+        }
+      },
+    })
+    console.log(categoryData)
+
+    useEffect(() => {
+      if (categoryData && categoryData.products) {
+        setProducts(categoryData.products);
+      }
+    }, [categoryData]);
+    
+    
   const navigate = useNavigate();
 
   const [products, setProducts] = useState(Product.products);
@@ -67,9 +107,9 @@ const Products = ({ cartItems, setCartItems}) => {
   
 
   const handleItemClick = () => {
-    setShow(false)
-      setProducts(Product1.products)
-  }
+    setShow(false);
+    setProducts(Product1.products);
+  };
   const [open, setOpen] = useState({
     fruits: false,
     meat: false,
@@ -130,13 +170,15 @@ const Products = ({ cartItems, setCartItems}) => {
   }
 
   const [showProgressBar, setShowProgressBar] = useState(false);
+ 
   useEffect(() => {
     if (searchTerm) {
-      setFilteredProducts(products.filter(product => product.title.toLowerCase().includes(searchTerm.toLowerCase())));
+      setFilteredProducts(Array.isArray(products) ? products.filter(product => product.title.toLowerCase().includes(searchTerm.toLowerCase())) : []);
     } else {
-      setFilteredProducts(products);
+      setFilteredProducts(Array.isArray(products) ? products : []);
     }
   }, [products, searchTerm]);
+  
 
   const handleIncrease = (index) => {
     console.log('Increase clicked:', index);
@@ -172,19 +214,22 @@ if (selectedProduct) {
 }
 
 
-  const addToCart = (product, index) => {
-    setShowSpinner(true);
-    setTimeout(() => {
-      setShowSpinner(false);
-    }, 1000);
-    const newCartItems = [...cartItems];
+const addToCart = (product, index) => {
+  setShowSpinner(true);
+  setTimeout(() => {
+    setShowSpinner(false);
+  }, 1000);
+  setCartItems((prevCartItems) => {
+    const newCartItems = [...prevCartItems];
     for (let i = 0; i < quantities[index]; i++) {
       newCartItems.push(product);
     }
-    setCartItems(newCartItems);
-    setShowProgressBar(true);
-    setTimeout(() => setShowProgressBar(false), 3000);
-  }
+    return newCartItems;
+  });
+  setShowProgressBar(true);
+  setTimeout(() => setShowProgressBar(false), 3000);
+};
+
   return (
 <>
     {showLogo  ? (
@@ -425,8 +470,8 @@ if (selectedProduct) {
                     <img src={product.image} id="image" alt={product.title} />
                   </div>
                   <div className="card-body custom-card-body">
-                    <div className="price"><strong>₹{product.price}</strong>  <del>₹{product.strikethroughPrice}</del></div>
-                    <h5 className="card-title">{product.title}</h5>
+                    <div className="price"><strong>₹{product.prize}</strong></div>
+                    <h5 className="card-title">{product.name}</h5>
                  
                   <div className="card-footer bg_foot">
                     {!showQuantityForm[index] ? (
@@ -487,7 +532,7 @@ if (selectedProduct) {
   <div className="modal-dialog modal-dialog-centered">
     <div className="modal-content custom-modal">
       <div className="modal-header">
-        <h5 className="modal-title">{selectedProduct.title}</h5>
+        <h5 className="modal-title">{selectedProduct.name}</h5>
         <button type="button" className="btn-close" onClick={handleclose}></button>
       </div>
       <div className="modal-body">
@@ -556,8 +601,8 @@ if (selectedProduct) {
 
 
 
-            <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div>
-            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.price}</div>
+            {/* <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div> */}
+            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.prize}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
   className="btn cart-button cart1"
@@ -580,7 +625,7 @@ if (selectedProduct) {
         <hr />
         <div className="col-md-4" style={{ textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>
   <h5>Details:</h5>
-  <p id="details">{selectedProduct.details}</p>
+  <p id="details">{selectedProduct.description}</p>
 </div>
 
 
@@ -591,13 +636,13 @@ if (selectedProduct) {
     <div className="col custom-col"  key={product.id}>
       <div className="card container2 custom-card" onClick={() => handleCardClick(product)}>
         <div className="card-image">
-          <img id="img_popup"src={product.image} alt={product.title}  />
+          <img id="img_popup"src={product.image} alt={product.name}  />
         </div>
         <div className="card-body custom-card-body">
           <div className="price">
-            <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
+            <strong>₹{product.prize}</strong> 
           </div>
-          <h5 className="card-title">{product.title}</h5>
+          <h5 className="card-title">{product.name}</h5>
           <div className="card-footer bg_foot">
             {!showQuantityForm[index] ? (
               <button
