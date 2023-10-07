@@ -7,6 +7,8 @@ import Product2 from '../DummyData/Product2';
 import ProductSnakcs1 from '../DummyData/Product2_filter'
 import ProductSauce from '../DummyData/Product2_filter1'
 import { Button, Offcanvas } from 'react-bootstrap';
+import 'react-toastify/dist/ReactToastify.css'; 
+
 
 import { useNavigate } from 'react-router-dom';
 import NavigationBar from '../navbar/Navbar';
@@ -26,7 +28,31 @@ import { gql, useQuery } from "@apollo/client";
 
 const Products = ({ cartItems, setCartItems}) => {
 
+  const GET_MAIN_CATEGORIES = gql`
+    query MasterCategories($filter: MasterCategoryInput) {
+      masterCategories(filter: $filter) {
+        category
+        shopId
+        status
+        position
+        image
+        id
+      }
+    } 
+  `;
   const GET_SECONDARY_CATEGORIES = gql`
+  query SecondaryCategories($filter: categoryFilter) {
+    secondaryCategories(filter: $filter) {
+      category
+      id
+      image
+      shopId
+      status
+    }
+  }
+    `;
+
+  const GET_PRODUCTS= gql`
   query Products($filter: productfilter) {
     products(filter: $filter) {
       category
@@ -40,28 +66,45 @@ const Products = ({ cartItems, setCartItems}) => {
         quantity
       }
     }
-  } 
-    `;
-    const{
-      loading:categoryLoading,
-      error:categoryError,
-      data:categoryData,
-      refetch:categoryRefetch,
-    }= useQuery(GET_SECONDARY_CATEGORIES,{
-      variables:{
+  } `
+    
+
+    const { loading, error, data } = useQuery(GET_MAIN_CATEGORIES, {
+      variables: {
         "filter": {
-          "categoryId": 19,
-          "shopId": 1000,
+          "shopId": 2
         }
       },
-    })
-    console.log(categoryData)
+    });
+    const [selectedMasterCategory, setSelectedMasterCategory] = useState(null);
+
+const { loading: secondaryLoading, error: secondaryError, data: secondaryData } = useQuery(GET_SECONDARY_CATEGORIES, {
+  variables: {
+    "filter": {
+      "shopId": 2,
+      "masterCategoryId": selectedMasterCategory ? selectedMasterCategory.id : null,
+    }
+  },
+});
+
+
+
+const { loading: productLoading, error: ProductError, data: ProductData } = useQuery(GET_PRODUCTS, {
+  variables: {
+    "filter": {
+      "shopId": 2,
+      "masterCategoryId": selectedMasterCategory ? selectedMasterCategory.id : null,
+      
+    }
+  },
+});
+
 
     useEffect(() => {
-      if (categoryData && categoryData.products) {
-        setProducts(categoryData.products);
+      if (ProductData && ProductData.products) {
+        setProducts(ProductData.products);
       }
-    }, [categoryData]);
+    }, [ProductData]);
     
     
   const navigate = useNavigate();
@@ -105,7 +148,11 @@ const Products = ({ cartItems, setCartItems}) => {
   }
   
   
-
+  function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
+   toast.info(secondaryCategory.category)
+    setOpen({ ...open, [masterCategory.id]: false });
+  }
+  
   const handleItemClick = () => {
     setShow(false);
     setProducts(Product1.products);
@@ -190,7 +237,20 @@ const Products = ({ cartItems, setCartItems}) => {
     document.querySelector('.overlay').style.display = 'none';
 
   }
+
+const handleMasterCategoryClick = (category) => {
+
+  setSelectedMasterCategory(category);
+
+  console.log(category.id)
   
+  setOpen((prevOpen) => ({
+    ...prevOpen,
+    [category.id]: !prevOpen[category.id],
+  }));
+};
+
+
   const handleDecrease = (index) => {
     console.log('Decrease clicked:', index);
     setQuantities(quantities.map((q, i) => i === index && q > 1 ? q - 1 : q));
@@ -373,23 +433,37 @@ const addToCart = (product, index) => {
 
       <Row>
         <Col md={3}>
+          {/* this is the desktop sidebar */}
         <Nav className="flex-column text-dark min-vh-100 bg_side1">
-      
-        <Nav.Link className="text-dark link opened" onClick={() => handleOpen('fruits')}>
-  <div className="d-flex flex-row justify-content-between">
-    <div className="d-flex flex-row">
-      <div className="p-2">
-        <AppleIcon id="icons" />
+        {data.masterCategories.map((masterCategory) => (
+  <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+    <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row">
+        <div className="p-2">
+          <AppleIcon id="icons" /> {/* Replace with dynamic icon if available */}
+        </div>
+        <div className="p-2 side_txt">{masterCategory.category}</div>
       </div>
-      <div className="p-2 side_txt">Fruits & Vegetables</div>
+      <div className="p-2">
+        {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+      </div>
     </div>
-    <div className="p-2">
-      {open.fruits ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-    </div>
-  </div>
-</Nav.Link>
+      {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+  </Nav.Link>
+    
+))}
 
-      {open.fruits && (
+      {/* {open.fruits && (
         <ul className={`ms-1 submenu ${open.fruits ? 'show' : ''}`} id="ul_list1">
         <li>
           <Nav.Link className="text-dark">Fruits</Nav.Link>
@@ -456,7 +530,7 @@ const addToCart = (product, index) => {
           </li>
         </ul>
       )}
-      
+       */}
     </Nav>
         </Col>
         <Col md={9}>
