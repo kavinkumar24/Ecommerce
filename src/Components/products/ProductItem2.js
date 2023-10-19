@@ -11,6 +11,8 @@ import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Offcanvas } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+
 import { Nav } from 'react-bootstrap';
 import bedlogo from '../images/furnitures/bed/bed.png'
 import sofo_logo from '../images/furnitures/sofa.png'
@@ -263,8 +265,14 @@ function ProductItem2({ cartItems, setCartItems }) {
 		
     </div>
     <div className="container"> 
-      
-    <div className="row row-cols-1 row-cols-md-4 g-5 ddd">
+    <Row>
+        <Col md={3}>
+        <Nav className="flex-column text-dark min bg_side1">
+        <h1>kk</h1>
+</Nav>
+</Col>
+<Col md={9}>
+    <div className="row row-cols-1 row-cols-md-3 g-5   ddd">
             {filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
                 <div className="card container3" onClick={() => handleCardClick(product)}>
@@ -311,14 +319,18 @@ function ProductItem2({ cartItems, setCartItems }) {
                       </>
                     )}
                   <div className="card-body custom-card-body">
-                    <div className="price"><strong>₹{product.price}</strong>  <del>₹{product.strikethroughPrice}</del></div>
-                    <h5 className="card-title">{product.title}</h5>      
+                    <div className="price"><strong>₹{product.prize}</strong>  
+                    
+                    </div>
+                    <h5 className="card-title">{product.name}</h5>      
                 </div>
               </div>
             
             </div>
           ))}
         </div>
+        </Col>
+        </Row>
         {showPopup && selectedProduct && (
           <div className="modal show" style={{ display: 'block', overflow: 'hidden' }}>
   <div className="modal-dialog modal-dialog-centered">

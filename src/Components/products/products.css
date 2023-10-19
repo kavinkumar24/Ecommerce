@@ -596,6 +596,11 @@ font-size: 12px;
   background-color: white !important;
 }
 
+.bg_side2{
+  background-color:#ebebeb;
+  z-index: -99999999999999;
+}
+
 .unfilled {
   color: transparent;
   -webkit-text-stroke-width: 2px;
@@ -884,4 +889,13 @@ margin-top: 10px;
     fill: #ffffff;
     text-shadow: 0 1px #ccc, 0 2px #ccc, 0 3px #ccc, 0 4px #ccc, 0 5px #ccc, 0 6px 0 transparent, 0 7px transparent, 0 8px transparent, 0 9px transparent, 0 10px 10px rgba(0, 0, 0, 0.4);
   }
+}
+
+.second_category{
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top:1100px;
+  background-color:lightgoldenrodyellow;
+  z-index: 999;
 }

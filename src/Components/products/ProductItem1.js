@@ -13,15 +13,16 @@ import fil4 from '../images/Bakery_dropdown/Coffee_Tea-2_gblecp-transformed.png'
 import fil5 from '../images/Bakery_dropdown/Pice_Cake-2_uhialp-transformed.png'
 import { Button, Offcanvas } from 'react-bootstrap';
 import { Nav } from 'react-bootstrap';
-
-
+import { gql, useQuery } from "@apollo/client";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import fil6 from '../images/Bakery_dropdown/Pies-7_wlpzfd-transformed.png'
 import fil7 from '../images/Bakery_dropdown/Pita_Bread-2_daz412-transformed.png'
 import fil8 from '../images/Bakery_dropdown/Round_Cake-3_pigscm-transformed.png'
 import { FaMinus, FaPlus,FaRegHeart } from 'react-icons/fa';
 import Carousel from 'react-bootstrap/Carousel';
-
-import { ToastContainer, toast } from 'react-toastify';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Col, Row } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify'; 
  function ProductItem1({ cartItems, setCartItems}) {
 
  
@@ -30,11 +31,116 @@ import { ToastContainer, toast } from 'react-toastify';
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const GET_MAIN_CATEGORIES = gql`
+  query MasterCategories($filter: MasterCategoryInput) {
+    masterCategories(filter: $filter) {
+      category
+      shopId
+      status
+      position
+      image
+      id
+    }
+  } 
+`;
+  
+const GET_SECONDARY_CATEGORIES = gql`
+query SecondaryCategories($filter: categoryFilter) {
+  secondaryCategories(filter: $filter) {
+    category
+    id
+    image
+    shopId
+    status
+  }
+}
+  `;
+  const GET_PRODUCTS= gql`
+  query Products($filter: productfilter) {
+    products(filter: $filter) {
+      category
+      categoryId
+      description
+      discount
+      id
+      name
+      prize
+      quantity {
+        quantity
+      }
+    }
+  } `
+
+const { loading, error, data } = useQuery(GET_MAIN_CATEGORIES, {
+  variables: {
+    "filter": {
+      "shopId": 12
+    }
+  },
+});
+const [selectedMasterCategory, setSelectedMasterCategory] = useState(null);
+
+const { loading: secondaryLoading, error: secondaryError, data: secondaryData } = useQuery(GET_SECONDARY_CATEGORIES, {
+  variables: {
+    "filter": {
+      "shopId": 12,
+      "masterCategoryId": selectedMasterCategory ? selectedMasterCategory.id : null,
+    }
+  },
+});
+useEffect(() => {
+  if (secondaryError) {
+    setShowSpinner(false);
+    console.error('An error occurred:', secondaryError.message);
+  } else if (!secondaryLoading) {
+    setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+  }
+}, [secondaryLoading, secondaryError]);
+
+
+
+const [selectedSecondaryCategory, setSelectedSecondaryCategory] = useState(null);
+const { loading: secondaryproductLoading, error: secondaryProductError, data: ProductData } = useQuery(GET_PRODUCTS, {
+  variables: {
+      "filter": {
+        "shopId": 12,
+        "categoryId": selectedSecondaryCategory ? selectedSecondaryCategory.id : null,
+      }
+  },
+});
+useEffect(() => {
+  if (secondaryProductError) {
+    setShowSpinner(false);
+    alert("error")
+  } else if (!secondaryproductLoading) {
+    setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+  }
+}, [secondaryproductLoading, secondaryProductError]);
+
+
+
+
+console.log(ProductData)
+console.log(secondaryData);
+
+useEffect(() => {
+  if (ProductData && ProductData.products) {
+    setProducts(ProductData.products);
+  }
+}, [ProductData]);
+console.log(data)
+
+
   const navigate = useNavigate();
   const [products, setProducts] = useState(Product.products);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [quantities, setQuantities] = useState(new Array(products.length).fill(1));
   const [showPopup, setShowPopup] = useState(false);
+  const[showcategories,setShowCategories] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState('')
@@ -54,6 +160,9 @@ import { ToastContainer, toast } from 'react-toastify';
       overlay.style.display = 'none';
     }
   };
+
+
+
   const [open, setOpen] = useState({
     Juice: false,
     Cookies: false,
@@ -64,6 +173,8 @@ import { ToastContainer, toast } from 'react-toastify';
     pitabread: false,
     Roundcake: false,
   });
+
+  const [open_drop, setOpen_drop] = useState(null);
 
   const handleOpen = (key) => {
     setOpen((prevOpen) => {
@@ -93,6 +204,7 @@ import { ToastContainer, toast } from 'react-toastify';
     setTimeout(() => {
       setShowSpinner(false);
     }, 1000);
+    setShowCategories(true);
     setProducts(Product.products)
 
   }
@@ -156,6 +268,39 @@ import { ToastContainer, toast } from 'react-toastify';
   }
 
 
+  function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
+    toast.info(secondaryCategory.category)
+     setOpen({ ...open, [masterCategory.id]: false });
+   }
+   const handleMasterCategoryClick =(masterCategory) => {
+    setShowSpinner(true);
+    setOpen((prevOpen) => {
+      let newOpenState = { ...prevOpen };
+      if (newOpenState[masterCategory.id]) {
+        newOpenState[masterCategory.id] = false;
+      } else {
+        for (let key in newOpenState) {
+          newOpenState[key] = false;
+        }
+        newOpenState[masterCategory.id] = true;
+      }
+  
+      return newOpenState;
+    });
+  
+    setSelectedMasterCategory(masterCategory);
+
+    
+  };
+  
+
+
+  function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
+    toast.info(secondaryCategory.category);
+    setSelectedSecondaryCategory(secondaryCategory); 
+    setOpen({ ...open, [masterCategory.id]: false });
+  }
+  
   const addToCart = (product, index) => {
     setShowSpinner(true);
     setTimeout(() => {
@@ -172,6 +317,8 @@ import { ToastContainer, toast } from 'react-toastify';
   
   return (
     <>
+    
+
      <div class="topnav">
 
     <Button variant="primary" className="btn1"onClick={handleShow}>
@@ -184,42 +331,33 @@ import { ToastContainer, toast } from 'react-toastify';
         </Offcanvas.Header>
         <Offcanvas.Body>
         <Nav className="flex-column text-dark min-vh-100 bg_side">
-      
-      <Nav.Link className="text-dark link opened" onClick={() => handleOpen('Juice')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">Juice</div>
-  </div>
-</div>
-</Nav.Link>
+        {data && data.masterCategories.map((masterCategory) => (
+          <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              <div className="p-2">
+              </div>
+              <div className="p-2 side_txt">{masterCategory.category}</div>
+            </div>
+            <div className="p-2">
+              {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+            </div>
+          </div>
+          {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+        </Nav.Link>
 
-  
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('Cookies')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-      </div>
-    <div className="p-2 side_txt">Cookies</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('Croissant')}>
-<div className="d-flex flex-row justify-content-between align-items-center">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">Croissant</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-    
-  </Nav>
+))}
+</Nav>
         </Offcanvas.Body>
       </Offcanvas>
       <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
@@ -312,7 +450,40 @@ import { ToastContainer, toast } from 'react-toastify';
     </div>
     <div className="container"> 
       
-    <div className="row row-cols-1 row-cols-md-4 g-5 ddd">
+        {/* this is the desktop sidebar */}
+        <Row>
+        <Col md={3}>
+        <Nav className="flex-column text-dark min bg_side1">
+        {data && data.masterCategories.map((masterCategory) => (
+          <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              <div className="p-2">
+              </div>
+              <div className="p-2 side_txt">{masterCategory.category}</div>
+            </div>
+            <div className="p-2">
+              {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+            </div>
+          </div>
+          {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+        </Nav.Link>
+
+))}
+</Nav>
+</Col>
+<Col md={9}>
+    <div className="row row-cols-1 row-cols-md-3 g-5   ddd">
             {filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
                 <div className="card container3" onClick={() => handleCardClick(product)}>
@@ -359,20 +530,24 @@ import { ToastContainer, toast } from 'react-toastify';
                       </>
                     )}
                   <div className="card-body custom-card-body">
-                    <div className="price"><strong>₹{product.price}</strong>  <del>₹{product.strikethroughPrice}</del></div>
-                    <h5 className="card-title">{product.title}</h5>      
+                    <div className="price"><strong>₹{product.prize}</strong>  
+                    
+                    </div>
+                    <h5 className="card-title">{product.name}</h5>      
                 </div>
               </div>
             
             </div>
           ))}
         </div>
+        </Col>
+        </Row>
         {showPopup && selectedProduct && (
           <div className="modal show" style={{ display: 'block', overflow: 'hidden' }}>
   <div className="modal-dialog modal-dialog-centered">
     <div className="modal-content custom-modal">
       <div className="modal-header">
-        <h5 className="modal-title">{selectedProduct.title}</h5>
+        <h5 className="modal-title">{selectedProduct.category}</h5>
         <button type="button" className="btn-close" onClick={handleclose}></button>
       </div>
       <div className="modal-body">
@@ -415,22 +590,21 @@ import { ToastContainer, toast } from 'react-toastify';
           <div className="col-md-4">
           <FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />
             
-            <h5 id="heading1">{selectedProduct.title}</h5>
+            <h5 id="heading1">{selectedProduct.name}</h5>
             
             <p id="des" style={{ color: '#6b7280' }}>
   {showFullDescription[selectedIndex]
     ? selectedProduct.description
-    : selectedProduct.description.split(' ').slice(0, 30).join(' ')}
+    : `${selectedProduct.description.split(' ').slice(0, 30).join(' ')}...`}
   {!showFullDescription[selectedIndex] && (
-  <a id="read_more"
+    <a
+      id="read_more"
       href="#2"
       onClick={(event) => {
         event.preventDefault();
-        setShowFullDescription((prevShowFullDescription) =>
-          prevShowFullDescription.map((value, i) =>
-            i === selectedIndex ? true : value
-          )
-        );
+        let newShowFullDescription = [...showFullDescription];
+        newShowFullDescription[selectedIndex] = true;
+        setShowFullDescription(newShowFullDescription);
       }}
     >
       <br></br>
@@ -441,7 +615,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 
-            <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div>
+            {/* <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div> */}
             <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.price}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
@@ -471,18 +645,18 @@ import { ToastContainer, toast } from 'react-toastify';
 
 <hr style={{marginTop:'40px'}}/>
 <h5 style={{textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>Related Products:</h5>
-<div className="row row-cols-1 row-cols-md-4 g-5 ddd1 p-3">
+<div className="row row-cols-1 row-cols-md-4 g-5 ddd1">
   {filteredProducts.map((product, index) => (
     <div className="col custom-col"  key={product.id}>
-      <div className="card container3 custom-card" onClick={() => handleCardClick(product)}>
+      <div className="card container2 custom-card" onClick={() => handleCardClick(product)}>
         <div className="card-image">
-          <img id="img_popup"src={product.image} alt={product.title}  />
+          <img id="img_popup"src={product.image} alt={product.name}  />
         </div>
         <div className="card-body custom-card-body">
           <div className="price">
-            <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
+            <strong>₹{product.prize}</strong> 
           </div>
-          <h5 className="card-title">{product.title}</h5>
+          <h5 className="card-title">{product.name}</h5>
           <div className="card-footer bg_foot">
             {!showQuantityForm[index] ? (
               <button
@@ -527,7 +701,6 @@ import { ToastContainer, toast } from 'react-toastify';
     </div>
   ))}
 </div>
-
       </div>
 
     </div>
