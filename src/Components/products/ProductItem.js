@@ -440,7 +440,8 @@ const addToCart = (product, index) => {
     <div className="d-flex flex-row justify-content-between">
       <div className="d-flex flex-row">
         <div className="p-2">
-          <AppleIcon id="icons" /> 
+
+          <AppleIcon id="icons" />
         </div>
         <div className="p-2 side_txt">{masterCategory.category}</div>
       </div>
