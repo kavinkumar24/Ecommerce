@@ -189,6 +189,7 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
       setProducts(Product2.products)
     }
   };
+
   
   useEffect(() => {
     const savedLikedProducts = localStorage.getItem('likedProducts');
@@ -203,7 +204,7 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLogo(false);
-    }, 3000); 
+    }, 3400); 
     return () => clearTimeout(timer); 
   }, []);
 
@@ -220,13 +221,12 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
  
   useEffect(() => {
     if (searchTerm) {
-      setFilteredProducts(Array.isArray(products) ? products.filter(product => product.title.toLowerCase().includes(searchTerm.toLowerCase())) : []);
+      setFilteredProducts(Array.isArray(products) ? products.filter(product => product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())) : []);
     } else {
       setFilteredProducts(Array.isArray(products) ? products : []);
     }
   }, [products, searchTerm]);
   
-
   const handleIncrease = (index) => {
     console.log('Increase clicked:', index);
     setQuantities(quantities.map((q, i) => i === index ? q + 1 : q));
@@ -310,10 +310,26 @@ const addToCart = (product, index) => {
         
       </style>
       <text transform="matrix(1 0 0 1 0 125.5508)" className="st10 st11 st12">
-        STRACKIT     
+        STRA<tspan style={{color:'black'}}>CK</tspan>IT     
       </text>
     </svg>
+   
   </div>
+
+  <div class="area" >
+            <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+            </ul>
+    </div >
 
 
 </div>
@@ -321,6 +337,7 @@ const addToCart = (product, index) => {
     <div>
 
 <div class="topnav">
+<ToastContainer />
 
 <Button variant="primary" className="btn1"onClick={handleShow}>
     Filter

@@ -12,18 +12,117 @@ import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { Col, Row } from 'react-bootstrap';
-
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Nav } from 'react-bootstrap';
 import bedlogo from '../images/furnitures/bed/bed.png'
 import sofo_logo from '../images/furnitures/sofa.png'
 import table_logo from '../images/furnitures/chair.png'
 import { FaMinus, FaPlus,FaRegHeart } from 'react-icons/fa';
 import Carousel from 'react-bootstrap/Carousel';
+import { gql, useQuery } from "@apollo/client";
 
 
 function ProductItem2({ cartItems, setCartItems }) {
   
- 
+
+  const [selectedMasterCategory, setSelectedMasterCategory] = useState(null);
+
+
+  const GET_MAIN_CATEGORIES = gql`
+  query MasterCategories($filter: MasterCategoryInput) {
+    masterCategories(filter: $filter) {
+      category
+      shopId
+      status
+      position
+      image
+      id
+    }
+  } 
+`;
+const GET_SECONDARY_CATEGORIES = gql`
+query SecondaryCategories($filter: categoryFilter) {
+  secondaryCategories(filter: $filter) {
+    category
+    id
+    image
+    shopId
+    status
+  }
+}
+  `;
+
+  const GET_PRODUCTS= gql`
+  query Products($filter: productfilter) {
+    products(filter: $filter) {
+      category
+      categoryId
+      description
+      discount
+      id
+      name
+      prize
+      quantity {
+        quantity
+      }
+    }
+  } `
+
+  const { loading, error, data } = useQuery(GET_MAIN_CATEGORIES, {
+    variables: {
+      "filter": {
+        "shopId": 12
+      }
+    },
+  });
+  const { loading: secondaryLoading, error: secondaryError, data: secondaryData } = useQuery(GET_SECONDARY_CATEGORIES, {
+    variables: {
+      "filter": {
+        "shopId": 12,
+        "masterCategoryId": selectedMasterCategory ? selectedMasterCategory.id : null,
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (secondaryError) {
+      setShowSpinner(false);
+      console.error('An error occurred:', secondaryError.message);
+    } else if (!secondaryLoading) {
+      setTimeout(() => {
+        setShowSpinner(false);
+      }, 1000);
+    }
+  }, [secondaryLoading, secondaryError]);
+
+
+  const [selectedSecondaryCategory, setSelectedSecondaryCategory] = useState(null);
+const { loading: secondaryproductLoading, error: secondaryProductError, data: ProductData } = useQuery(GET_PRODUCTS, {
+  variables: {
+      "filter": {
+        "shopId": 12,
+        "categoryId": selectedSecondaryCategory ? selectedSecondaryCategory.id : null,
+      }
+  },
+});
+
+useEffect(() => {
+  if (ProductData && ProductData.products) {
+    setProducts(ProductData.products);
+  }
+}, [ProductData]);
+useEffect(() => {
+  if (secondaryProductError) {
+    setShowSpinner(false);
+    alert("error")
+  } else if (!secondaryproductLoading) {
+    setTimeout(() => {
+      setShowSpinner(false);
+    }, 1000);
+  }
+}, [secondaryproductLoading, secondaryProductError]);
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -173,8 +272,34 @@ function ProductItem2({ cartItems, setCartItems }) {
     setTimeout(() => setShowProgressBar(false), 3000);
   }
   
+  const handleMasterCategoryClick =(masterCategory) => {
+    setShowSpinner(true);
+    setOpen((prevOpen) => {
+      let newOpenState = { ...prevOpen };
+      if (newOpenState[masterCategory.id]) {
+        newOpenState[masterCategory.id] = false;
+      } else {
+        for (let key in newOpenState) {
+          newOpenState[key] = false;
+        }
+        newOpenState[masterCategory.id] = true;
+      }
+  
+      return newOpenState;
+    });
+  
+    setSelectedMasterCategory(masterCategory);
+  };
+  function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
+    toast.info(secondaryCategory.category);
+    setSelectedSecondaryCategory(secondaryCategory); 
+    setOpen({ ...open, [masterCategory.id]: false });
+  }
+  
   return (
     <>
+  <ToastContainer />
+
      <div class="topnav">
 
     <Button variant="primary" className="btn1"onClick={handleShow}>
@@ -260,20 +385,43 @@ function ProductItem2({ cartItems, setCartItems }) {
         </div>
 			</div>
 			
-			
-	
-		
+
     </div>
     <div className="container"> 
     <Row>
         <Col md={3}>
         <Nav className="flex-column text-dark min bg_side1">
-        <h1>kk</h1>
+        {data && data.masterCategories.map((masterCategory) => (
+          <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              <div className="p-2">
+              </div>
+              <div className="p-2 side_txt">{masterCategory.category}</div>
+            </div>
+            <div className="p-2">
+              {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+            </div>
+          </div>
+          {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+        </Nav.Link>
+
+))}
 </Nav>
 </Col>
 <Col md={9}>
-    <div className="row row-cols-1 row-cols-md-3 g-5   ddd">
-            {filteredProducts.map((product, index) => (
+    <div className="row row-cols-1 row-cols-md-3 g-5 ddd">
+    {filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
                 <div className="card container3" onClick={() => handleCardClick(product)}>
                   <div className="card-image">

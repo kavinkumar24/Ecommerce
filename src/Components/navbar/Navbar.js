@@ -9,7 +9,6 @@ import Logo from '../images/logo.png'
 import { FaSearch } from 'react-icons/fa';
 import { useRef } from "react";
 import ImageSlider from './ImageSlider';
-
 import '../products/products.css'
 import Modal from 'react-modal';
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,7 +22,54 @@ import styled from 'styled-components';
 import { FaGoogle,FaMobile } from 'react-icons/fa';
 import { Button1,Form1,customStyles,GlobalStyle,Hr,Input1  } from '../Authentic/Styled';
 
+import image1 from '../images/image1.jpg';
+import image2 from '../images/bg_2.jpg';
+import image3 from '../images/bg_3.jpg';
+import image4 from '../images/bg_4.jpg';
+
+
 function NavigationBar({ cartItems, uniqueItems,showSlideshow = true ,showHeader = true,showDropdown: initialShowDropdown = false,onSearch ,showImageContainer = true}) {
+  
+
+  const images = [image1, image2, image3, image4];
+
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex((currentImageIndex + 1) % images.length);
+    }, 5000); 
+
+    return () => clearInterval(intervalId); 
+  }, [currentImageIndex]);
+
+  const getBackgroundStyle = () => ({
+    backgroundImage: `url(${images[currentImageIndex]})`,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: currentImageIndex===0 ?'0 -500px':'center',
+    height: '700px',
+    top: '-10px',
+    position: 'relative',
+    left: '0px !important',
+    overflow: 'hidden',
+    objectFit: 'contain',
+    backdropFilter: 'blur(50px)',
+    transition: 'background-image 1s ease-in-out'
+  });
+
+  const getTextContainerStyle = () => ({
+    border: currentImageIndex === 0 ? 'none' : '1px solid #009f7f',
+    padding: '10px',
+   backgroundColor:currentImageIndex === 0 ?'transparent':'#009f7f5a',
+   
+   color:currentImageIndex === 0 ?'black':'black',
+    width:'50%',
+    justifyContent:'center',
+    marginLeft:'24%',
+    borderRadius: '5px'
+  });
   
   const [showSearch, setShowSearch] = useState(false);
 
@@ -51,17 +97,7 @@ const handleSelect = (eventKey,event) => {
 
  const [selectedOption, setSelectedOption] = useState('');
 
- const getBackgroundStyle = () => {
-  if (selectedOption === 'Grocery') {
-    return {
-      backgroundImage: "url('../images/image1.jpg')",
-     
-    };
-  }
-   else {
-    return { backgroundColor: 'red' };
-  }
-};
+ 
 const itemCount = uniqueItems ? uniqueItems.length : 0;
 
   useEffect(() => {
@@ -101,7 +137,8 @@ const itemCount = uniqueItems ? uniqueItems.length : 0;
   const typingRef = useRef();
 
   useEffect(() => {
-    const text = "Groceries Delivered in 90 Minute";
+    const text = "Goods at Your Door in a Jiffy! "
+
     let index = 0;
   
     function type() {
@@ -156,7 +193,7 @@ const closeModal = () => {
     <NavDropdown.Item as={RouterLink} to="/ProductItem1" eventKey="Bakery" onSelect={handleSelect}><img src={cookie_logo} width="22px" height="22px"alt='2'/> Bakery</NavDropdown.Item>
     <NavDropdown.Item as={RouterLink} to="/ProductItem2" eventKey="furnitures" onSelect={handleSelect}><img src={chair_logo} width="22px" height="22px"alt='2'/> Furnitures</NavDropdown.Item>
     <NavDropdown.Item as={RouterLink} to="/ProductItem3" eventKey="clothing" onSelect={handleSelect}> <img src={clothing_logo} width="22px" height="22px"alt='2'/> Clothing</NavDropdown.Item>
-    <NavDropdown.Item href="#action/5.3" eventKey="clothing" onSelect={handleSelect}>Clothing</NavDropdown.Item>
+  
     <NavDropdown.Divider />
     
   </NavDropdown>
@@ -175,7 +212,7 @@ const closeModal = () => {
 
   <Nav.Link href="#FAQ" id="home">FAQ</Nav.Link>
   <Nav.Link as={RouterLink} to="/contact"  href="#Contact" id="home">Contact</Nav.Link>
-  <Button style={{ marginRight: '10px' }} id="button">Become seller</Button>
+  <Button style={{ marginRight: '10px' }} id="button"  onClick={openModal}>Become seller</Button>
   <Button id="button" onClick={openModal}>Join</Button>
 
   <Nav.Link as={RouterLink} to="/cart" className='cart'>
@@ -271,24 +308,23 @@ const closeModal = () => {
       {showImageContainer && (
         <>
       <div className='image_container' style={getBackgroundStyle()}>
-      <div className='text_container'>
+      <div className='text_container' style={getTextContainerStyle()}>
 
       <h1 id="autotype"ref={typingRef} className="typing">
-          
           </h1>
           <br></br>
           
-            <p id="para">Get your healthy foods & snacks delivered at your doorsteps all day everyday</p>
+            <p id="para">Get your products at your doorsteps all day everyday</p>
           </div>
           <br></br>
 
-      <Form inline className="mx-auto" id="search_form1" style={{ display: 'flex', alignItems: 'center', zIndex:'99999', left: '50%', transform: 'translateX(-50%)' }}>
+      <Form onSubmit={e => { e.preventDefault();}} inline className="mx-auto" id="search_form1" style={{ display: 'flex', alignItems: 'center', zIndex:'9999', left: '50%', transform: 'translateX(-50%)' }}>
       
       <FormControl id="input_search_form" type="text" placeholder="Search your products from here" className="mr-sm-2 " onChange={e => setSearchTerm(e.target.value)} style={{ borderRadius: '5px 0 0 5px' }} />
 
 
     <Button className='btn-bg search_btn' onClick={handleClick} id="search" style={{ borderRadius: '0px 5px 5px 0px' }}>
-      <FaSearch/>  Search</Button>
+      <FaSearch/> Search</Button>
   </Form>
 </div>
 <ImageSlider  />

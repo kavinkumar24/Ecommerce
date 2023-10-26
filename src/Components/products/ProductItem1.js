@@ -295,11 +295,7 @@ console.log(data)
   
 
 
-  function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
-    toast.info(secondaryCategory.category);
-    setSelectedSecondaryCategory(secondaryCategory); 
-    setOpen({ ...open, [masterCategory.id]: false });
-  }
+
   
   const addToCart = (product, index) => {
     setShowSpinner(true);
@@ -318,6 +314,7 @@ console.log(data)
   return (
     <>
     
+    <ToastContainer />
 
      <div class="topnav">
 
@@ -483,7 +480,7 @@ console.log(data)
 </Nav>
 </Col>
 <Col md={9}>
-    <div className="row row-cols-1 row-cols-md-3 g-5   ddd">
+    <div className="row row-cols-1 row-cols-md-3 g-5 ddd">
             {filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
                 <div className="card container3" onClick={() => handleCardClick(product)}>
@@ -616,7 +613,7 @@ console.log(data)
 
 
             {/* <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div> */}
-            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.price}</div>
+            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.prize}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
   className="btn cart-button cart1"
