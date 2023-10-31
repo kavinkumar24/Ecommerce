@@ -31,6 +31,47 @@ import image4 from '../images/bg_4.jpg';
 function NavigationBar({ cartItems, uniqueItems,showSlideshow = true ,showHeader = true,showDropdown: initialShowDropdown = false,onSearch ,showImageContainer = true}) {
   
 
+ 
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const userEmail = 'user@example.com'
+    const userPassword = '123'
+
+    if (email === userEmail && password === userPassword) {
+      setIsLoggedIn(true)
+      setShowSpinner(true)
+      setTimeout(() => {
+        setShowSpinner(false)
+      }, 1000)
+      localStorage.setItem('isLoggedIn', 'true')
+      closeModal()
+
+    } else {
+      alert('Invalid credentials')
+    }
+  };
+
+  const handleLogout = () => {
+    setShowSpinner(true)
+    setTimeout(()=>{
+      setShowSpinner(false)
+    },1000)
+    setIsLoggedIn(false)
+
+    localStorage.setItem('isLoggedIn', 'false')
+    setEmail('')
+    setPassword('')
+  };
+
+
+
+
   const images = [image1, image2, image3, image4];
 
 
@@ -98,9 +139,14 @@ const handleSelect = (eventKey,event) => {
  const [selectedOption, setSelectedOption] = useState('');
 
  
-const itemCount = uniqueItems ? uniqueItems.length : 0;
+ let storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+ let uniqueProductIds = new Set(storedCartItems.map(item => item.id));
+ let itemCount = uniqueProductIds.size;
+ 
 
   useEffect(() => {
+    
+
     let timer;
     if (showLoader) {
       timer = setTimeout(() => {
@@ -176,6 +222,7 @@ const closeModal = () => {
   setIsRegister(false);
 
 };
+
   return (
     <>
       <Navbar collapseOnSelect expand="lg" variant="light" id='Navbar1'>
@@ -213,7 +260,16 @@ const closeModal = () => {
   <Nav.Link href="#FAQ" id="home">FAQ</Nav.Link>
   <Nav.Link as={RouterLink} to="/contact"  href="#Contact" id="home">Contact</Nav.Link>
   <Button style={{ marginRight: '10px' }} id="button"  onClick={openModal}>Become seller</Button>
+  {isLoggedIn ? (
+  <NavDropdown title={<i class="fas fa-user"></i>} id="basic-nav-dropdown">
+    <NavDropdown.Item as={RouterLink} to="/user-profile">Profile</NavDropdown.Item>
+    <NavDropdown.Divider />
+    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+  </NavDropdown>
+) : (
   <Button id="button" onClick={openModal}>Join</Button>
+)}
+
 
   <Nav.Link as={RouterLink} to="/cart" className='cart'>
               <i class="fa fa-shopping-cart cart_icon"></i>
@@ -273,10 +329,10 @@ const closeModal = () => {
             <h2><img src={Logo} alt='logo' style={{ width: '190px' }}/></h2>
             <Form>
               <label htmlFor="email">Email:</label>
-              <Input1 type="email" name="email" placeholder="Email" required />
+              <Input1 type="email" name="email" placeholder="Email" required onChange={e => setEmail(e.target.value)}/>
               <label htmlFor="password">Password:</label>
-              <Input1 type="password" name="password" placeholder="Password" required />
-              <Button1 type="submit" style={{ backgroundColor: "#089b7d",color:'white'}}>Login</Button1>
+              <Input1 type="password" name="password" placeholder="Password" required onChange={e => setPassword(e.target.value)}  />
+              <Button1 type="submit" style={{ backgroundColor: "#089b7d",color:'white'}} onClick={handleLogin}>Login</Button1>
                 </Form>
                 <Hr />
                 <Button1 style={{ backgroundColor: "#4285f4",color:'white'}}><FaGoogle />Login with Google</Button1>

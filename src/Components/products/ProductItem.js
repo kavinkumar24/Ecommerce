@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import './products.css'
 import Product from '../DummyData/Product';
 import { useEffect } from 'react';
-import Product1 from '../DummyData/Product1';
-import Product2 from '../DummyData/Product2';
 import ProductSnakcs1 from '../DummyData/Product2_filter'
 import ProductSauce from '../DummyData/Product2_filter1'
 import { Button, Offcanvas } from 'react-bootstrap';
@@ -16,15 +14,14 @@ import { Col, Row, Nav, NavDropdown, Toast } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
-import CookieIcon from '@mui/icons-material/Cookie';
-import KebabDiningIcon from '@mui/icons-material/KebabDining';
 
-import { FaChevronDown, FaChevronUp,FaAppleAlt,FaDrumstickBite,FaRegHeart } from 'react-icons/fa';
+import {FaRegHeart } from 'react-icons/fa';
 import AppleIcon from '@mui/icons-material/Apple';
 import Carousel from 'react-bootstrap/Carousel';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { gql, useQuery } from "@apollo/client";
+import { useMutation } from '@apollo/client';
 
 const Products = ({ cartItems, setCartItems}) => {
 
@@ -69,7 +66,7 @@ const Products = ({ cartItems, setCartItems}) => {
   } `
     
 
-    const { loading, error, data } = useQuery(GET_MAIN_CATEGORIES, {
+    const { loading:Product_loading_main, error:product_main_error_find, data } = useQuery(GET_MAIN_CATEGORIES, {
       variables: {
         "filter": {
           "shopId": 2
@@ -124,19 +121,33 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
   const uniqueItems = [...new Set(cartItems)];
   const [showLikedProducts, setShowLikedProducts] = useState(false);
   const [likedProducts, setLikedProducts] = useState([]);
-  
-  const [showQuantityForm, setShowQuantityForm] = useState(new Array(filteredProducts.length).fill(false));
 
+
+  const [showQuantityForm, setShowQuantityForm] = useState(JSON.parse(localStorage.getItem('showQuantityForm')) || new Array(filteredProducts.length).fill(false));
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
+
+  const [addedItems, setAddedItems] = useState(JSON.parse(localStorage.getItem('addedItems')) || []);
 
   const handleAddClick = (product, index, event) => {
     event.stopPropagation();
+    if(isLoggedIn===false){
+      alert("Please Login to add products")
+      return
+    }
     addToCart(product, index);
-    setShowQuantityForm((prevShowQuantityForm) =>
-      prevShowQuantityForm.map((value, i) => (i === index ? true : value))
-    );
-
-    toast.success("Item added to the cart")
+    const newAddedItems = [...addedItems, product.id];
+    setAddedItems(newAddedItems);
+    
+    
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.push(product); 
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    localStorage.setItem('addedItems', JSON.stringify(newAddedItems)); 
   };
+
+  
+  
 
   const handleLikeClick = (products, selectedIndex, event) => {
     setLikedProducts((prevLikedProducts) => [...prevLikedProducts, products[selectedIndex]]);
@@ -151,44 +162,15 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
   function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
    toast.info(secondaryCategory.category)
     setOpen({ ...open, [masterCategory.id]: false });
+    setShow(false)
   }
   
-  const handleItemClick = () => {
-    setShow(false);
-    setProducts(Product1.products);
-  };
-  const [open, setOpen] = useState({
-    fruits: false,
-    meat: false,
-    snacks: false,
-    pet: false,
-    home: false,
-    dairy: false,
-    cooking: false,
-    breakfast: false,
-    beverage: false,
-    health: false
-  });
+
+  const [open, setOpen] = useState({});
 
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-  const handleOpen = (key) => {
-    setOpen((prevOpen) => {
-      const newOpen = { ...prevOpen };
-      Object.keys(newOpen).forEach((k) => {
-        newOpen[k] = k === key ? !prevOpen[k] : false;
-      });
-      return newOpen;
-    });
-    if (key === 'fruits') {
-      setProducts(Product.products);
-    } else if (key === 'meat') {
-      setProducts(Product1.products);
-    }
-    else if(key==='snacks'){
-      setProducts(Product2.products)
-    }
-  };
+ 
 
   
   useEffect(() => {
@@ -229,7 +211,8 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
   
   const handleIncrease = (index) => {
     console.log('Increase clicked:', index);
-    setQuantities(quantities.map((q, i) => i === index ? q + 1 : q));
+    setQuantities(prevQuantities => ({ ...prevQuantities, [index]: (prevQuantities[index] || 0) + 1 }));
+  localStorage.setItem('quantities', JSON.stringify(quantities));
   }
 
   const handleclose = ()=>{
@@ -253,7 +236,8 @@ const handleMasterCategoryClick = (category) => {
 
   const handleDecrease = (index) => {
     console.log('Decrease clicked:', index);
-    setQuantities(quantities.map((q, i) => i === index && q > 1 ? q - 1 : q));
+    setQuantities(prevQuantities => ({ ...prevQuantities, [index]: Math.max((prevQuantities[index] || 0) - 1, 0) }));
+  localStorage.setItem('quantities', JSON.stringify(quantities));
   }
   const handleCardClick = (product) => {
     setSelectedProduct(product);
@@ -273,21 +257,43 @@ if (selectedProduct) {
   );
 }
 
+useEffect(() => {
+  localStorage.setItem('quantities', JSON.stringify(quantities));
+}, [quantities]);
+
+// const ADD_TO_CART = gql`
+//   mutation AddToCart($userId: ID!, $productId: ID!, $quantity: Int!, $shopId: ID!) {
+//     AddToCart(userId: $userId, productId: $productId, quantity: $quantity, shopId: $shopId) {
+//       id
+//       quantity
+//     }
+//   }
+// `;
+
+// const [addProductToCart] = useMutation(ADD_TO_CART);
+
 
 const addToCart = (product, index) => {
   setShowSpinner(true);
-  setTimeout(() => {
-    setShowSpinner(false);
-  }, 1000);
-  setCartItems((prevCartItems) => {
-    const newCartItems = [...prevCartItems];
-    for (let i = 0; i < quantities[index]; i++) {
-      newCartItems.push(product);
-    }
-    return newCartItems;
-  });
-  setShowProgressBar(true);
-  setTimeout(() => setShowProgressBar(false), 3000);
+  
+  // addProductToCart({ variables: { userId: 2 ,productId: 2, quantity: 1, shopId: 2 } })
+    
+      setTimeout(() => {
+        setShowSpinner(false);
+      }, 1000);
+      
+      setCartItems((prevCartItems) => {
+        const newCartItems = [...prevCartItems];
+        for (let i = 0; i < quantities[index]; i++) {
+          newCartItems.push(product);
+        }
+        return newCartItems;
+      });
+      
+      setShowProgressBar(true);
+      setTimeout(() => setShowProgressBar(false), 3000);
+    
+    
 };
 
   return (
@@ -333,7 +339,7 @@ const addToCart = (product, index) => {
 
 
 </div>
-    ):(
+    ):( 
     <div>
 
 <div class="topnav">
@@ -350,109 +356,8 @@ const addToCart = (product, index) => {
     <Offcanvas.Body>
     <Nav className="flex-column text-dark min-vh-100 bg_side">
   
-    <Nav.Link className="text-dark link opened" onClick={() => handleOpen('fruits')}>
-  <div className="d-flex flex-row justify-content-between">
-    <div className="d-flex flex-row">
-      <div className="p-2">
-        <AppleIcon id="icons" />
-      </div>
-      <div className="p-2 side_txt">Fruits & Vegetables</div>
-    </div>
-    <div className="p-2">
-      {open.fruits ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-    </div>
-  </div>
-</Nav.Link>
-{open.fruits && (
-        <ul className={`ms-1 submenu ${open.fruits ? 'show' : ''}`} id="ul_list1">
-        <li>
-          <Nav.Link className="text-dark">Fruits</Nav.Link>
-        </li>
-        <li>
-          <Nav.Link className="text-dark" onClick={handleItemClick}>Vegetables</Nav.Link>
-        </li>
-        <li>
-          
-        </li>
-      </ul>
-      )}
-
-
-<Nav.Link className="text-dark link" onClick={() => handleOpen('meat')}>
-  <div className="d-flex flex-row justify-content-between">
-    <div className="d-flex flex-row">
-      <div className="p-2">
-        <KebabDiningIcon id="icons" />
-      </div>
-      <div className="p-2 side_txt">Meat & Fish</div>
-    </div>
-    <div className="p-2">
-      {open.meat ? <ArrowDropUpIcon  /> : <ArrowDropDownIcon  />}
-    </div>
-  </div>
-</Nav.Link>
-
-      {open.meat && (
-        <ul className="ms-1" id="ul_list1">
-          <li>
-            <Nav.Link className="text-dark">Chicken</Nav.Link>
-          </li>
-          <li>
-            <Nav.Link className="text-dark">Meat</Nav.Link>
-          </li>
-          <li>
-            <Nav.Link className="text-dark">Fish</Nav.Link>
-          </li>
-        </ul>
-      )}
-      <Nav.Link className="text-dark link" onClick={() => handleOpen('snacks')}>
-  <div className="d-flex flex-row justify-content-between align-items-center">
-    <div className="d-flex flex-row">
-      <div className="p-2">
-        <CookieIcon id="icons" />
-      </div>
-      <div className="p-2 side_txt">Snacks</div>
-    </div>
-    <div className="p-2">
-      {open.snacks ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-    </div>
-  </div>
-</Nav.Link>
-
-      {open.snacks && (
-        <ul className="ms-1" id ="ul_list1">
-          <li>
-            <Nav.Link className="text-dark">cookies</Nav.Link>
-          </li>
-          <li>
-            <Nav.Link className="text-dark" onClick={handleNoodles}>Noodles</Nav.Link>
-          </li>
-          <li>
-            <Nav.Link className="text-dark" onClick={handleSauce}>Sauce</Nav.Link>
-          </li>
-        </ul>
-      )}
-      
-
-
-</Nav>
-    </Offcanvas.Body>
-  </Offcanvas>
-
-    <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
-
-
-    <div className="overlay"></div>
-
-    <div className="container">
-      
-       
-
-      <Row>
-        <Col md={3}>
-          {/* this is the desktop sidebar */}
-        <Nav className="flex-column text-dark min-vh-100 bg_side1">
-        {data.masterCategories.map((masterCategory) => (
+    <Nav.Link className="text-dark link opened">
+  {data.masterCategories && data.masterCategories.map((masterCategory) => (
   <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
     <div className="d-flex flex-row justify-content-between">
       <div className="d-flex flex-row">
@@ -480,6 +385,61 @@ const addToCart = (product, index) => {
   </Nav.Link>
     
 ))}
+ 
+</Nav.Link>
+
+
+
+</Nav>
+    </Offcanvas.Body>
+  </Offcanvas>
+
+    <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
+
+
+    <div className="overlay"></div>
+
+    <div className="container">
+      
+       
+
+      <Row>
+        <Col md={3}>
+          {/* this is the desktop sidebar */}
+        <Nav className="flex-column text-dark min-vh-100 bg_side1">
+        
+    <Nav.Link className="text-dark link opened">
+  {data.masterCategories.map((masterCategory) => (
+  <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+    <div className="d-flex flex-row justify-content-between">
+      <div className="d-flex flex-row">
+        <div className="p-2">
+
+          <AppleIcon id="icons" />
+        </div>
+        <div className="p-2 side_txt">{masterCategory.category}</div>
+      </div>
+      <div className="p-2">
+        {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+      </div>
+    </div>
+      {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+  </Nav.Link>
+    
+))}
+ 
+</Nav.Link>
+
 
       {/* {open.fruits && (
         <ul className={`ms-1 submenu ${open.fruits ? 'show' : ''}`} id="ul_list1">
@@ -555,7 +515,7 @@ const addToCart = (product, index) => {
         <ToastContainer />
     
         <div className="row row-cols-1 row-cols-md-3 g-5 ddd">
-            {filteredProducts.map((product, index) => (
+            {filteredProducts && filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
                 <div className="card container1" onClick={() => handleCardClick(product)}>
                   <div className="card-image">
@@ -566,45 +526,20 @@ const addToCart = (product, index) => {
                     <h5 className="card-title">{product.name}</h5>
                  
                   <div className="card-footer bg_foot">
-                    {!showQuantityForm[index] ? (
-                     <button
-                     className="btn cart-button cart1" 
-                     onClick={(event) => handleAddClick(product, index, event)}
-                     style={{ width: '100%' }}
-                   >
-                     Add
-                   </button>
-                   
-                    ) : (
-                      <>
-                        <form
-                          className="quantity-form"
-                          onSubmit={(e) => e.preventDefault()}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
-                          <button
-                            className="increment-decrement-button decrement1"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDecrease(index);
-                            }}
-                          >
-                            <FaMinus />
-                          </button>
-                          <input type="text" value={quantities[index]} readOnly />
-                          <button
-                            className="increment-decrement-button increment1"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleIncrease(index);
-                            }}
-                          >
-                            <FaPlus />
-                          </button>
-                        </form>
-                        
-                      </>
-                    )}
+                  {addedItems.includes(product.id) ? (
+    <div className="quantity-label">
+      Item added to cart
+    </div>
+  ) : (
+    <button
+      className="btn cart-button cart1" 
+      onClick={(event) => handleAddClick(product, index, event)}
+      style={{ width: '100%' }}
+    >
+      Add
+    </button>
+  )}
+
                   </div>
                 </div>
               </div>
@@ -794,7 +729,8 @@ const addToCart = (product, index) => {
       
 
     </div>
-    {showSpinner && (
+         
+{showSpinner && (
   <div
   style={{
     position: "fixed",

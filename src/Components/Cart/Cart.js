@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaShoppingBag } from 'react-icons/fa';
 import NavigationBar from '../navbar/Navbar';
+import { useEffect } from 'react';
 import Draggable from 'react-draggable';
 
 function Cart({ cartItems, setCartItems }) {
@@ -21,26 +22,38 @@ function Cart({ cartItems, setCartItems }) {
     }
   });
 
-  const uniqueItems = [...new Set(cartItems)];
-
+  const uniqueItems = [...new Set(cartItems)]
   function onAddItem(item) {
-    setCartItems([...cartItems, item]);
+    const newCartItems = [...cartItems, item]
+    setCartItems(newCartItems);
+    localStorage.setItem('cartItems', JSON.stringify(newCartItems))
   }
+  
   function clearCart() {
     setCartItems([]);
+    localStorage.removeItem('cartItems')
+    localStorage.removeItem('addedItems')
   }
   
 
+  useEffect(() => {
+    let storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    setCartItems(storedCartItems);
+  }, []);
+  
   function onDecrement(item) {
     setShowSpinner(true);
     setTimeout(() => {
       setShowSpinner(false);
       const index = cartItems.findIndex(i => i.id === item.id);
-    if (index !== -1) {
-      setCartItems([...cartItems.slice(0, index), ...cartItems.slice(index + 1)]);
-    }
+      if (index !== -1) {
+        const newCartItems = [...cartItems.slice(0, index), ...cartItems.slice(index + 1)];
+        setCartItems(newCartItems);
+        localStorage.setItem('cartItems', JSON.stringify(newCartItems));
+      }
     },1000)
-  }  
+  }
+  
 
   return (
     <>
