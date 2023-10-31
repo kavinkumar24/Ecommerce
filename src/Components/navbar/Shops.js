@@ -3,14 +3,12 @@ import './Shops.css';
 import data from '../DummyData/Shopdata';
 import NavigationBar from './Navbar';
 import { useState } from 'react';
-import location_image from '../images/map-pin.png'
+
 import Product1_grocery from '../DummyData/Product';
 
 import NewPage from '../products/ShopPage';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import ProductData from '../DummyData/Page3_fil1'
 import Product1Data from '../DummyData/Page_2_fil2'
 import Product2Data from '../DummyData/Page3_fil2'
 import Product_clothing from '../DummyData/Page4_fil2'

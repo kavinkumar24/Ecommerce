@@ -671,44 +671,21 @@ const addToCart = (product, index) => {
           </div>
           <h5 className="card-title">{product.name}</h5>
           <div className="card-footer bg_foot">
-            {!showQuantityForm[index] ? (
-              <button
-                className="btn cart-button cart1"
-                onClick={(event) => handleAddClick(product, index, event)}
-                style={{ width: '100%' }}
-              >
-                Add
-              </button>
-            ) : (
-              <>
-                <form
-                  className="quantity-form"
-                  onSubmit={(e) => e.preventDefault()}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <button
-                    className="increment-decrement-button decrement1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDecrease(index);
-                    }}
-                  >
-                    <FaMinus />
-                  </button>
-                  <input type="text" value={quantities[index]} readOnly />
-                  <button
-                    className="increment-decrement-button increment1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleIncrease(index);
-                    }}
-                  >
-                    <FaPlus />
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
+                  {addedItems.includes(product.id) ? (
+    <div className="quantity-label">
+      Item added to cart
+    </div>
+  ) : (
+    <button
+      className="btn cart-button cart1" 
+      onClick={(event) => handleAddClick(product, index, event)}
+      style={{ width: '100%' }}
+    >
+      Add
+    </button>
+  )}
+
+  </div>
         </div>
       </div>
     </div>
@@ -768,52 +745,29 @@ const addToCart = (product, index) => {
                   <div key={index} className="col custom-col" style={{ animation: `fadeIn ${index * 0.2}s` }}>
                     <div className="card container2 custom-card" onClick={() => handleCardClick(product)}>
                     <div className="card-image">
-                    <img src={product.image} id="img_popup" alt={product.title} />
+                    <img src={product.image} id="img_popup" alt={product.name} />
                     </div>
                     <div className="card-body custom-card-body">
           <div className="price">
-            <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
+            <strong>₹{product.prize}</strong> 
           </div>
           <h5 className="card-title">{product.title}</h5>
           <div className="card-footer bg_foot">
-            {!showQuantityForm[index] ? (
-              <button
-                className="btn cart-button cart1"
-                onClick={(event) => handleAddClick(product, index, event)}
-                style={{ width: '100%' }}
-              >
-                Add
-              </button>
-            ) : (
-              <>
-                <form
-                  className="quantity-form"
-                  onSubmit={(e) => e.preventDefault()}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <button
-                    className="increment-decrement-button decrement1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDecrease(index);
-                    }}
-                  >
-                    <FaMinus />
-                  </button>
-                  <input type="text" value={quantities[index]} readOnly />
-                  <button
-                    className="increment-decrement-button increment1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleIncrease(index);
-                    }}
-                  >
-                    <FaPlus />
-                  </button>
-                </form>
-              </>
-            )}
+                  {addedItems.includes(product.id) ? (
+          <div className="quantity-label">
+            Item added to cart
           </div>
+        ) : (
+          <button
+            className="btn cart-button cart1" 
+            onClick={(event) => handleAddClick(product, index, event)}
+            style={{ width: '100%' }}
+          >
+            Add
+          </button>
+        )}
+
+                  </div>
         </div>
 
 

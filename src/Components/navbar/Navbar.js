@@ -24,8 +24,9 @@ import { Button1,Form1,customStyles,GlobalStyle,Hr,Input1  } from '../Authentic/
 
 import image1 from '../images/image1.jpg';
 import image2 from '../images/bg_2.jpg';
-import image3 from '../images/bg_3.jpg';
-import image4 from '../images/bg_4.jpg';
+import image3 from '../images/bg_6.jpg';
+import image4 from '../images/bg_7.jpg';
+import image5 from '../images/bg_5.jpg';
 
 
 function NavigationBar({ cartItems, uniqueItems,showSlideshow = true ,showHeader = true,showDropdown: initialShowDropdown = false,onSearch ,showImageContainer = true}) {
@@ -72,7 +73,7 @@ function NavigationBar({ cartItems, uniqueItems,showSlideshow = true ,showHeader
 
 
 
-  const images = [image1, image2, image3, image4];
+  const images = [image1, image2, image3, image4,image5];
 
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -97,7 +98,7 @@ function NavigationBar({ cartItems, uniqueItems,showSlideshow = true ,showHeader
     overflow: 'hidden',
     objectFit: 'contain',
     backdropFilter: 'blur(50px)',
-    transition: 'background-image 1s ease-in-out'
+    transition: 'background-image 1s linear'
   });
 
   const getTextContainerStyle = () => ({

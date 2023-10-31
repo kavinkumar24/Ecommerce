@@ -1,13 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
 import './products.css';
-import Product1 from '../DummyData/Page3_fil1'
-import Product2 from '../DummyData/Page_3_fil3';
 import NavigationBar from '../navbar/Navbar';
 import Product from '../DummyData/Page3_fil2';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Offcanvas } from 'react-bootstrap';
@@ -18,7 +14,7 @@ import { Nav } from 'react-bootstrap';
 import bedlogo from '../images/furnitures/bed/bed.png'
 import sofo_logo from '../images/furnitures/sofa.png'
 import table_logo from '../images/furnitures/chair.png'
-import { FaMinus, FaPlus,FaRegHeart } from 'react-icons/fa';
+import { FaPlus,FaRegHeart, FaCheck} from 'react-icons/fa';
 import Carousel from 'react-bootstrap/Carousel';
 import { gql, useQuery } from "@apollo/client";
 
@@ -141,7 +137,7 @@ useEffect(() => {
     new Array(filteredProducts.length).fill(false)
   );
 
-  const [showQuantityForm, setShowQuantityForm] = useState(new Array(filteredProducts.length).fill(false));
+ 
   const [likedProducts, setLikedProducts] = useState([]);
   
   const [showLikedProducts, setShowLikedProducts] = useState(false);
@@ -153,58 +149,10 @@ useEffect(() => {
     }
   };
   const [open, setOpen] = useState({
-    sofa: false,
-    bed: false,
-    Croissant: false,
-    
   });
 
-  const handleOpen = (key) => {
-    setOpen((prevOpen) => {
-      const newOpen = { ...prevOpen };
-      Object.keys(newOpen).forEach((k) => {
-        newOpen[k] = k === key ? !prevOpen[k] : false;
-      });
-      return newOpen;
-    });
-    if (key === 'sofa') {
-      setShow(false)
-      setProducts(Product.products);
-    } else if (key === 'bed') {
-      setShow(false)
-      setProducts(Product1.products);
-    }
-    // else if(key==='Croissant'){
-    //   setProducts(Product1.products)
 
-    // }
-  };
 
-  const handleSofa = ()=>{
-    setShowSpinner(true);
-    setTimeout(() => {
-      setShowSpinner(false);
-    }, 1000);
-    setProducts(Product.products)
-
-  }
-  const handleBed = () =>{
-    setShowSpinner(true);
-    setTimeout(() => {
-      setShowSpinner(false);
-    }, 1000);
-    setProducts(Product1.products)
-
-  }
-
-  const handletable = () =>{
-    setShowSpinner(true);
-    setTimeout(() => {
-      setShowSpinner(false);
-    }, 1000);
-    setProducts(Product2.products)
-
-  }
 
 
   const handleLikeClick = (products, selectedIndex, event) => {
@@ -226,15 +174,27 @@ useEffect(() => {
   
   const uniqueItems = [...new Set(cartItems)];
 
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
+  
+  const [addedItems, setAddedItems] = useState(JSON.parse(localStorage.getItem('addedItems')) || []);
   const handleAddClick = (product, index, event) => {
     event.stopPropagation();
+    if(isLoggedIn===false){
+      alert("Please Login to add products")
+      return
+    }
     addToCart(product, index);
-    setShowQuantityForm((prevShowQuantityForm) =>
-      prevShowQuantityForm.map((value, i) => (i === index ? true : value))
-    );
-
-    toast.success("Item added to the cart")
+    const newAddedItems = [...addedItems, product.id];
+    setAddedItems(newAddedItems);
+    
+    
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.push(product); 
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    localStorage.setItem('addedItems', JSON.stringify(newAddedItems)); 
   };
+
   useEffect(() => {
     if (searchTerm) {
       setFilteredProducts(products.filter(product => product.title.toLowerCase().includes(searchTerm.toLowerCase())));
@@ -312,42 +272,33 @@ useEffect(() => {
         </Offcanvas.Header>
         <Offcanvas.Body>
         <Nav className="flex-column text-dark min-vh-100 bg_side">
-      
-      <Nav.Link className="text-dark link opened" onClick={() => handleOpen('sofa')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">Sofa</div>
-  </div>
-</div>
-</Nav.Link>
+        {data && data.masterCategories.map((masterCategory) => (
+          <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              <div className="p-2">
+              </div>
+              <div className="p-2 side_txt">{masterCategory.category}</div>
+            </div>
+            <div className="p-2">
+              {open[masterCategory.category] ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+            </div>
+          </div>
+          {open[masterCategory.id] && (
+      <ul className={`ms-1 submenu ${open[masterCategory.id] ? 'show' : ''}`} id="ul_list1">
+        {secondaryData && secondaryData.secondaryCategories && secondaryData.secondaryCategories.map((secondaryCategory) => (
+  <li key={secondaryCategory.id}>
+    <Nav.Link className="text-dark" onClick={() => handleSecondaryCategoryClick(secondaryCategory, masterCategory)}>
+      {secondaryCategory.category}
+    </Nav.Link>
+  </li>
+))}
+      </ul>
+    )}
+        </Nav.Link>
 
-  
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('bed')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-      </div>
-    <div className="p-2 side_txt">Bed</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('Croissant')}>
-<div className="d-flex flex-row justify-content-between align-items-center">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">tables</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-    
-  </Nav>
+))}
+</Nav>
         </Offcanvas.Body>
       </Offcanvas>
       <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
@@ -355,8 +306,7 @@ useEffect(() => {
 			
 			<div class="col-2">
         
-				<div class="card card-block card-1" onClick={handleSofa}>
-
+				<div class="card card-block card-1" >
         <div className="card-image scroll_filter_img_logo">
     <img src={sofo_logo} alt="filter1" />
     <p className='text_card'>Sofa</p>
@@ -366,7 +316,7 @@ useEffect(() => {
         </div>
 			</div>
 			<div class="col-2">
-				<div class="card card-block card-2" onClick={handleBed}>
+				<div class="card card-block card-2" >
       
       
         <div className="card-image scroll_filter_img_logo" >
@@ -377,7 +327,7 @@ useEffect(() => {
         </div>
 			</div>
 			<div class="col-2">
-				<div class="card card-block card-3" onClick={handletable}>
+				<div class="card card-block card-3" >
         <div className="card-image scroll_filter_img_logo">
     <img src={table_logo} alt="filter1" />
     <p className='text_card'>Table</p>
@@ -427,45 +377,19 @@ useEffect(() => {
                   <div className="card-image">
                     <img src={product.image} id="image" alt={product.title} />
                   </div>
-                  {!showQuantityForm[index] ? (
-                     <button
-                     className="btn cart-button cart1 page2_icon" 
-                     onClick={(event) => handleAddClick(product, index, event)}
-                    
-                   >
-                    <FaPlus/>
-                   </button>
-                   
-                    ) : (
-                      <>
-                        <form
-                          className="quantity-form1"
-                          onSubmit={(e) => e.preventDefault()}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
-                          <button
-                            className="increment-decrement-button decrement1 padding_dec"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDecrease(index);
-                            }}
-                          >
-                            <FaMinus />
-                          </button>
-                          <input type="text" value={quantities[index]} readOnly />
-                          <button
-                            className="increment-decrement-button increment1 padding_inc"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleIncrease(index);
-                            }}
-                          >
-                            <FaPlus />
-                          </button>
-                        </form>
-                        
-                      </>
-                    )}
+                  {addedItems.includes(product.id) ? (
+    <div className="quantity-label_check">
+      <FaCheck id="check_item" title='item added to the cart'/>
+    </div>
+  ) : (
+    <button
+    className="btn cart-button cart1 page2_icon" 
+    onClick={(event) => handleAddClick(product, index, event)}
+   
+  >
+   <FaPlus/>
+  </button>
+  )}
                   <div className="card-body custom-card-body">
                     <div className="price"><strong>₹{product.prize}</strong>  
                     
@@ -484,7 +408,7 @@ useEffect(() => {
   <div className="modal-dialog modal-dialog-centered">
     <div className="modal-content custom-modal">
       <div className="modal-header">
-        <h5 className="modal-title">{selectedProduct.title}</h5>
+        <h5 className="modal-title">{selectedProduct.category}</h5>
         <button type="button" className="btn-close" onClick={handleclose}></button>
       </div>
       <div className="modal-body">
@@ -527,7 +451,7 @@ useEffect(() => {
           <div className="col-md-4">
           <FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />
             
-            <h5 id="heading1">{selectedProduct.title}</h5>
+            <h5 id="heading1">{selectedProduct.name}</h5>
             
             <p id="des" style={{ color: '#6b7280' }}>
   {showFullDescription[selectedIndex]
@@ -553,8 +477,8 @@ useEffect(() => {
 
 
 
-            <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div>
-            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.price}</div>
+            
+            <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.prize}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
   className="btn cart-button cart1"
@@ -577,7 +501,7 @@ useEffect(() => {
         <hr />
         <div className="col-md-4" style={{ textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>
   <h5>Details:</h5>
-  <p id="details">{selectedProduct.details}</p>
+  <p id="details">{selectedProduct.description}</p>
 </div>
 
 
@@ -588,52 +512,29 @@ useEffect(() => {
     <div className="col custom-col"  key={product.id}>
       <div className="card container3 custom-card" onClick={() => handleCardClick(product)}>
         <div className="card-image">
-          <img id="img_popup"src={product.image} alt={product.title}  />
+          <img id="img_popup"src={product.image} alt={product.name}  />
         </div>
         <div className="card-body custom-card-body">
           <div className="price">
-            <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
+            <strong>₹{product.prize}</strong> 
           </div>
-          <h5 className="card-title">{product.title}</h5>
+          <h5 className="card-title">{product.name}</h5>
           <div className="card-footer bg_foot">
-            {!showQuantityForm[index] ? (
-              <button
-                className="btn cart-button cart1"
-                onClick={(event) => handleAddClick(product, index, event)}
-                style={{ width: '100%' }}
-              >
-                Add
-              </button>
-            ) : (
-              <>
-                <form
-                  className="quantity-form"
-                  onSubmit={(e) => e.preventDefault()}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <button
-                    className="increment-decrement-button decrement1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDecrease(index);
-                    }}
-                  >
-                    <FaMinus />
-                  </button>
-                  <input type="text" value={quantities[index]} readOnly />
-                  <button
-                    className="increment-decrement-button increment1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleIncrease(index);
-                    }}
-                  >
-                    <FaPlus />
-                  </button>
-                </form>
-              </>
-            )}
+                  {addedItems.includes(product.id) ? (
+          <div className="quantity-label">
+            Item added to cart
           </div>
+        ) : (
+          <button
+            className="btn cart-button cart1" 
+            onClick={(event) => handleAddClick(product, index, event)}
+            style={{ width: '100%' }}
+          >
+            Add
+          </button>
+        )}
+
+                  </div>
         </div>
       </div>
     </div>

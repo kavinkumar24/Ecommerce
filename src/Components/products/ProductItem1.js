@@ -18,7 +18,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import fil6 from '../images/Bakery_dropdown/Pies-7_wlpzfd-transformed.png'
 import fil7 from '../images/Bakery_dropdown/Pita_Bread-2_daz412-transformed.png'
 import fil8 from '../images/Bakery_dropdown/Round_Cake-3_pigscm-transformed.png'
-import { FaMinus, FaPlus,FaRegHeart } from 'react-icons/fa';
+import { FaMinus, FaPlus,FaRegHeart,FaCheck} from 'react-icons/fa';
 import Carousel from 'react-bootstrap/Carousel';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Col, Row } from 'react-bootstrap';
@@ -176,26 +176,7 @@ console.log(data)
 
   const [open_drop, setOpen_drop] = useState(null);
 
-  const handleOpen = (key) => {
-    setOpen((prevOpen) => {
-      const newOpen = { ...prevOpen };
-      Object.keys(newOpen).forEach((k) => {
-        newOpen[k] = k === key ? !prevOpen[k] : false;
-      });
-      return newOpen;
-    });
-    if (key === 'Juice') {
-      setShow(false)
-      setProducts(Product.products);
-    } else if (key === 'Cookies') {
-      setShow(false)
-      setProducts(Product1.products);
-    }
-    // else if(key==='Croissant'){
-    //   setProducts(Product1.products)
-
-    // }
-  };
+ 
 
   const uniqueItems = [...new Set(cartItems)];
 
@@ -234,17 +215,28 @@ console.log(data)
       (product) => product.id === selectedProduct.id
     );
   }
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
   
+  const [addedItems, setAddedItems] = useState(JSON.parse(localStorage.getItem('addedItems')) || []);
 
   const handleAddClick = (product, index, event) => {
     event.stopPropagation();
+    if(isLoggedIn===false){
+      alert("Please Login to add products")
+      return
+    }
     addToCart(product, index);
-    setShowQuantityForm((prevShowQuantityForm) =>
-      prevShowQuantityForm.map((value, i) => (i === index ? true : value))
-    );
-
-    toast.success("Item added to the cart")
+    const newAddedItems = [...addedItems, product.id];
+    setAddedItems(newAddedItems);
+    
+    
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.push(product); 
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    localStorage.setItem('addedItems', JSON.stringify(newAddedItems)); 
   };
+
   useEffect(() => {
     if (searchTerm) {
       setFilteredProducts(products.filter(product => product.title.toLowerCase().includes(searchTerm.toLowerCase())));
@@ -253,15 +245,7 @@ console.log(data)
     }
   }, [products, searchTerm]);
 
-  const handleIncrease = (index) => {
-    console.log('Increase clicked:', index);
-    setQuantities(quantities.map((q, i) => i === index ? q + 1 : q));
-  }
-  
-  const handleDecrease = (index) => {
-    console.log('Decrease clicked:', index);
-    setQuantities(quantities.map((q, i) => i === index && q > 1 ? q - 1 : q));
-  }
+ 
   const handleCardClick = (product) => {
     setSelectedProduct(product);
     setShowPopup(true);
@@ -487,45 +471,20 @@ console.log(data)
                   <div className="card-image">
                     <img src={product.image} id="image" alt={product.title} />
                   </div>
-                  {!showQuantityForm[index] ? (
-                     <button
-                     className="btn cart-button cart1 page2_icon" 
-                     onClick={(event) => handleAddClick(product, index, event)}
-                    
-                   >
-                    <FaPlus/>
-                   </button>
-                   
-                    ) : (
-                      <>
-                        <form
-                          className="quantity-form1"
-                          onSubmit={(e) => e.preventDefault()}
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
-                        >
-                          <button
-                            className="increment-decrement-button decrement1 padding_dec"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDecrease(index);
-                            }}
-                          >
-                            <FaMinus />
-                          </button>
-                          <input type="text" value={quantities[index]} readOnly />
-                          <button
-                            className="increment-decrement-button increment1 padding_inc"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleIncrease(index);
-                            }}
-                          >
-                            <FaPlus />
-                          </button>
-                        </form>
-                        
-                      </>
-                    )}
+                 
+                  {addedItems.includes(product.id) ? (
+    <div className="quantity-label_check">
+      <FaCheck id="check_item" title='item added to the cart'/>
+    </div>
+  ) : (
+    <button
+    className="btn cart-button cart1 page2_icon" 
+    onClick={(event) => handleAddClick(product, index, event)}
+   
+  >
+   <FaPlus/>
+  </button>
+  )}
                   <div className="card-body custom-card-body">
                     <div className="price"><strong>₹{product.prize}</strong>  
                     
@@ -636,7 +595,7 @@ console.log(data)
         <hr />
         <div className="col-md-4" style={{ textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>
   <h5>Details:</h5>
-  <p id="details">{selectedProduct.details}</p>
+  <p id="details">{selectedProduct.description}</p>
 </div>
 
 
@@ -655,44 +614,21 @@ console.log(data)
           </div>
           <h5 className="card-title">{product.name}</h5>
           <div className="card-footer bg_foot">
-            {!showQuantityForm[index] ? (
-              <button
-                className="btn cart-button cart1"
-                onClick={(event) => handleAddClick(product, index, event)}
-                style={{ width: '100%' }}
-              >
-                Add
-              </button>
-            ) : (
-              <>
-                <form
-                  className="quantity-form"
-                  onSubmit={(e) => e.preventDefault()}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <button
-                    className="increment-decrement-button decrement1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDecrease(index);
-                    }}
-                  >
-                    <FaMinus />
-                  </button>
-                  <input type="text" value={quantities[index]} readOnly />
-                  <button
-                    className="increment-decrement-button increment1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleIncrease(index);
-                    }}
-                  >
-                    <FaPlus />
-                  </button>
-                </form>
-              </>
-            )}
+                  {addedItems.includes(product.id) ? (
+          <div className="quantity-label">
+            Item added to cart
           </div>
+        ) : (
+          <button
+            className="btn cart-button cart1" 
+            onClick={(event) => handleAddClick(product, index, event)}
+            style={{ width: '100%' }}
+          >
+            Add
+          </button>
+        )}
+
+                  </div>
         </div>
       </div>
     </div>
