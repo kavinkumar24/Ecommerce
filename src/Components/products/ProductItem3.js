@@ -10,30 +10,19 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import fil1 from '../images/Dress/hoodie.png'
 import fil2 from '../images/Dress/shirt.png'
-
 import fil3 from '../images/Dress/tshirt.png'
 import fil4 from '../images/Dress/trousers.png'
-import fil5 from '../images/Bakery_dropdown/Pice_Cake-2_uhialp-transformed.png'
 import { Button, Offcanvas } from 'react-bootstrap';
 import { Nav } from 'react-bootstrap';
-
-
-import fil6 from '../images/Bakery_dropdown/Pies-7_wlpzfd-transformed.png'
-import fil7 from '../images/Bakery_dropdown/Pita_Bread-2_daz412-transformed.png'
-import fil8 from '../images/Bakery_dropdown/Round_Cake-3_pigscm-transformed.png'
 import { FaMinus, FaPlus,FaRegHeart } from 'react-icons/fa';
 import Carousel from 'react-bootstrap/Carousel';
+import { toast } from 'react-toastify';
 
-import { ToastContainer, toast } from 'react-toastify';
- function ProductItem1({ cartItems, setCartItems}) {
+function ProductItem1({ cartItems, setCartItems}) {
 
- 
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const navigate = useNavigate();
   const [products, setProducts] = useState(Product.products);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [quantities, setQuantities] = useState(new Array(products.length).fill(1));
@@ -48,7 +37,6 @@ import { ToastContainer, toast } from 'react-toastify';
 
   const [showQuantityForm, setShowQuantityForm] = useState(new Array(filteredProducts.length).fill(false));
   const [likedProducts, setLikedProducts] = useState([]);
-  
   const [showLikedProducts, setShowLikedProducts] = useState(false);
   const handleclose = () => {
     setShowPopup(false);
@@ -65,8 +53,6 @@ import { ToastContainer, toast } from 'react-toastify';
     pants: false,
   });
   const uniqueItems = [...new Set(cartItems)];
-
-
   const handleOpen = (key) => {
     setOpen((prevOpen) => {
       const newOpen = { ...prevOpen };
@@ -82,7 +68,6 @@ import { ToastContainer, toast } from 'react-toastify';
       setShow(false)
       setProducts(Product1.products);
     }
-
     else if (key === 'tshirts') {
       setShow(false)
       setProducts(Product2.products);
@@ -103,7 +88,6 @@ import { ToastContainer, toast } from 'react-toastify';
       setShowSpinner(false);
     }, 1000);
     setProducts(Product.products)
-
   }
   const handleshirts = () =>{
     setShowSpinner(true);
@@ -113,7 +97,6 @@ import { ToastContainer, toast } from 'react-toastify';
     setProducts(Product1.products)
 
   }
-
   const handletshirts =()=>{
     setShowSpinner(true);
     setTimeout(() => {
@@ -121,7 +104,6 @@ import { ToastContainer, toast } from 'react-toastify';
     }, 1000);
     setProducts(Product2.products)
   }
-
   const handlepants =()=>{
     setShowSpinner(true);
     setTimeout(() => {
@@ -133,20 +115,16 @@ import { ToastContainer, toast } from 'react-toastify';
   const handleLikeClick = (products, selectedIndex, event) => {
     setLikedProducts((prevLikedProducts) => [...prevLikedProducts, products[selectedIndex]]);
     toast.success("Item added to like list")
-    
-  };
+  }
   const showLike = ()=>{
     setShowLikedProducts(true);
   }
-  
-  
   let selectedIndex;
   if (selectedProduct) {
     selectedIndex = filteredProducts.findIndex(
       (product) => product.id === selectedProduct.id
     );
   }
-  
 
   const handleAddClick = (product, index, event) => {
     event.stopPropagation();
@@ -178,8 +156,6 @@ import { ToastContainer, toast } from 'react-toastify';
     setSelectedProduct(product);
     setShowPopup(true);
   }
-
-
   const addToCart = (product, index) => {
     setShowSpinner(true);
     setTimeout(() => {
@@ -197,11 +173,10 @@ import { ToastContainer, toast } from 'react-toastify';
   return (
     <>
      <div class="topnav">
-
-    <Button variant="primary" className="btn1"onClick={handleShow}>
-        Filter
+      <Button variant="primary" className="btn1"onClick={handleShow}>
+          Filter
       </Button>
-      </div>
+     </div>
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Filter</Offcanvas.Title>
@@ -209,108 +184,87 @@ import { ToastContainer, toast } from 'react-toastify';
         <Offcanvas.Body>
         <Nav className="flex-column text-dark min-vh-100 bg_side">
       
-      <Nav.Link className="text-dark link opened" onClick={() => handleOpen('Hoodie')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">Hoodie</div>
-  </div>
-</div>
-</Nav.Link>
+        <Nav.Link className="text-dark link opened" onClick={() => handleOpen('Hoodie')}>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="d-flex flex-row">
+              <div className="p-2">
+              </div>
+              <div className="p-2 side_txt">Hoodie</div>
+            </div>
+          </div>
+        </Nav.Link>
 
   
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('Shirts')}>
-<div className="d-flex flex-row justify-content-between">
-  <div className="d-flex flex-row">
-    <div className="p-2">
+      <Nav.Link className="text-dark link" onClick={() => handleOpen('Shirts')}>
+        <div className="d-flex flex-row justify-content-between">
+          <div className="d-flex flex-row">
+            <div className="p-2">
+              </div>
+            <div className="p-2 side_txt">Shirts</div>
+          </div>
+          
+        </div>
+     </Nav.Link>
+
+      <Nav.Link className="text-dark link" onClick={() => handleOpen('tshirts')}>
+        <div className="d-flex flex-row justify-content-between align-items-center">
+          <div className="d-flex flex-row">
+            <div className="p-2">
+            </div>
+            <div className="p-2 side_txt">tshirts</div>
+          </div>
+        </div>
+      </Nav.Link>
+
+    <Nav.Link className="text-dark link" onClick={() => handleOpen('pants')}>
+      <div className="d-flex flex-row justify-content-between align-items-center">
+        <div className="d-flex flex-row">
+          <div className="p-2">
+          </div>
+          <div className="p-2 side_txt">pants</div>
+        </div>
       </div>
-    <div className="p-2 side_txt">Shirts</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-    <Nav.Link className="text-dark link" onClick={() => handleOpen('tshirts')}>
-<div className="d-flex flex-row justify-content-between align-items-center">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">tshirts</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-<Nav.Link className="text-dark link" onClick={() => handleOpen('pants')}>
-<div className="d-flex flex-row justify-content-between align-items-center">
-  <div className="d-flex flex-row">
-    <div className="p-2">
-    </div>
-    <div className="p-2 side_txt">pants</div>
-  </div>
-  
-</div>
-</Nav.Link>
-
-
-
-
-    
+    </Nav.Link>
   </Nav>
-        </Offcanvas.Body>
-      </Offcanvas>
-      <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
+    </Offcanvas.Body>
+    </Offcanvas>
+  <NavigationBar cartItems={cartItems} showSlideshow={true} showHeader = {true} showDropdown={true} onSearch={setSearchTerm} uniqueItems={uniqueItems}/>
   <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-2 pt-2">
-			
 			<div class="col-2">
-        
 				<div class="card card-block card-1" onClick={handleHoodie}>
-
         <div className="card-image scroll_filter1_img_logo">
-    <img src={fil1} alt="filter1" />
-    <p className='text_card'>Hoodie</p>
+        <img src={fil1} alt="filter1" />
+        <p className='text_card'>Hoodie</p>
   </div>
-
-
         </div>
 			</div>
 			<div class="col-2">
 				<div class="card card-block card-2" onClick={handleshirts}>
-      
-      
         <div className="card-image scroll_filter1_img_logo" >
-    <img src={fil2} alt="filter1" />
-    <p className='text_card'>Shirts</p>
-  </div>
+        <img src={fil2} alt="filter1" />
+        <p className='text_card'>Shirts</p>
+        </div>
 
         </div>
 			</div>
 			<div class="col-2">
-				<div class="card card-block card-3" onClick={handletshirts}>
-        <div className="card-image scroll_filter1_img_logo">
-    <img src={fil3} alt="filter1" />
-    <p className='text_card'>T-shirts</p>
-  </div>
-        </div>
+			<div class="card card-block card-3" onClick={handletshirts}>
+      <div className="card-image scroll_filter1_img_logo">
+        <img src={fil3} alt="filter1" />
+        <p className='text_card'>T-shirts</p>
+      </div>
+      </div>
 			</div>
 			<div class="col-2">
 				<div class="card card-block card-4" onClick={handlepants}>
         <div className="card-image scroll_filter1_img_logo">
-    <img src={fil4} alt="filter1" />
-    <p className='text_card'>Pants</p>
-
-  </div>
+        <img src={fil4} alt="filter1" />
+        <p className='text_card'>Pants</p>
+        </div>
         </div>
 			</div>
-		
-		
-			
-			
-		
     </div>
     <div className="container"> 
-      
     <div className="row row-cols-1 row-cols-md-4 g-5 ddd">
             {filteredProducts.map((product, index) => (
               <div className="col" key={product.id}>
@@ -322,7 +276,6 @@ import { ToastContainer, toast } from 'react-toastify';
                      <button
                      className="btn cart-button cart1 page2_icon" 
                      onClick={(event) => handleAddClick(product, index, event)}
-                    
                    >
                     <FaPlus/>
                    </button>
@@ -362,7 +315,6 @@ import { ToastContainer, toast } from 'react-toastify';
                     <h5 className="card-title">{product.title}</h5>      
                 </div>
               </div>
-            
             </div>
           ))}
         </div>
@@ -407,125 +359,117 @@ import { ToastContainer, toast } from 'react-toastify';
     </Carousel.Item>
   )}
 </Carousel>
-
             </div>
           </div>
-          
           <div className="col-md-4">
           <FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />
             
             <h5 id="heading1">{selectedProduct.title}</h5>
             
             <p id="des" style={{ color: '#6b7280' }}>
-  {showFullDescription[selectedIndex]
-    ? selectedProduct.description
-    : selectedProduct.description.split(' ').slice(0, 30).join(' ')}
-  {!showFullDescription[selectedIndex] && (
-  <a id="read_more"
-      href="#2"
-      onClick={(event) => {
-        event.preventDefault();
-        setShowFullDescription((prevShowFullDescription) =>
-          prevShowFullDescription.map((value, i) =>
-            i === selectedIndex ? true : value
-          )
-        );
-      }}
-    >
-      <br></br>
-      Read More
-    </a>
-  )}
-</p>
-
-
-
+              {showFullDescription[selectedIndex]
+                ? selectedProduct.description
+                : selectedProduct.description.split(' ').slice(0, 30).join(' ')}
+              {!showFullDescription[selectedIndex] && (
+              <a id="read_more"
+                  href="#2"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setShowFullDescription((prevShowFullDescription) =>
+                      prevShowFullDescription.map((value, i) =>
+                        i === selectedIndex ? true : value
+                      )
+                    );
+                  }}
+                >
+                  <br></br>
+                  Read More
+                </a>
+              )}
+            </p>
             <div className="strikethrough-price">₹{selectedProduct.strikethroughPrice}</div>
             <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.price}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
-  className="btn cart-button cart1"
-  onClick={(event) =>
-    handleAddClick(selectedProduct, selectedIndex, event)
-  }
-  id="pop_up_button"
-  style={{ color: 'white', paddingLeft: '12px', width: '300px', marginTop: '20px' }}
->
-  Add to shopping cart
-</button>
+              className="btn cart-button cart1"
+              onClick={(event) =>
+                handleAddClick(selectedProduct, selectedIndex, event)
+              }
+              id="pop_up_button"
+              style={{ color: 'white', paddingLeft: '12px', width: '300px', marginTop: '20px' }}
+            >
+              Add to shopping cart
+            </button>
 
-  <p id="available">Available product</p>
-</div>
-
-
-
+              <p id="available">Available product</p>
+            </div>
           </div>
         </div>
         <hr />
         <div className="col-md-4" style={{ textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>
-  <h5>Details:</h5>
-  <p id="details">{selectedProduct.details}</p>
-</div>
-
-
-<hr style={{marginTop:'40px'}}/>
-<h5 style={{textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>Related Products:</h5>
-<div className="row row-cols-1 row-cols-md-4 g-5 ddd1 p-3">
-  {filteredProducts.map((product, index) => (
-    <div className="col custom-col"  key={product.id}>
-      <div className="card container3 custom-card" onClick={() => handleCardClick(product)}>
-        <div className="card-image">
-          <img id="img_popup"src={product.image} alt={product.title}  />
-        </div>
-        <div className="card-body custom-card-body">
-          <div className="price">
-            <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
-          </div>
-          <h5 className="card-title">{product.title}</h5>
-          <div className="card-footer bg_foot">
-            {!showQuantityForm[index] ? (
-              <button
-                className="btn cart-button cart1"
-                onClick={(event) => handleAddClick(product, index, event)}
-                style={{ width: '100%' }}
-              >
-                Add
-              </button>
-            ) : (
-              <>
-                <form
-                  className="quantity-form"
-                  onSubmit={(e) => e.preventDefault()}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <button
-                    className="increment-decrement-button decrement1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDecrease(index);
-                    }}
-                  >
-                    <FaMinus />
-                  </button>
-                  <input type="text" value={quantities[index]} readOnly />
-                  <button
-                    className="increment-decrement-button increment1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleIncrease(index);
-                    }}
-                  >
-                    <FaPlus />
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
+        <h5>Details:</h5>
+        <p id="details">{selectedProduct.details}</p>
       </div>
+
+
+    <hr style={{marginTop:'40px'}}/>
+    <h5 style={{textAlign: 'left', marginTop:'30px',marginLeft: '40px', marginRight: '20px' }}>Related Products:</h5>
+    <div className="row row-cols-1 row-cols-md-4 g-5 ddd1 p-3">
+      {filteredProducts.map((product, index) => (
+        <div className="col custom-col"  key={product.id}>
+          <div className="card container3 custom-card" onClick={() => handleCardClick(product)}>
+            <div className="card-image">
+              <img id="img_popup"src={product.image} alt={product.title}  />
+            </div>
+            <div className="card-body custom-card-body">
+              <div className="price">
+                <strong>₹{product.price}</strong> <del>₹{product.strikethroughPrice}</del>
+              </div>
+              <h5 className="card-title">{product.title}</h5>
+              <div className="card-footer bg_foot">
+                {!showQuantityForm[index] ? (
+                  <button
+                    className="btn cart-button cart1"
+                    onClick={(event) => handleAddClick(product, index, event)}
+                    style={{ width: '100%' }}
+                  >
+                    Add
+                  </button>
+                ) : (
+                  <>
+                    <form
+                      className="quantity-form"
+                      onSubmit={(e) => e.preventDefault()}
+                      style={{ display: 'flex', justifyContent: 'space-between' }}
+                    >
+                      <button
+                        className="increment-decrement-button decrement1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDecrease(index);
+                        }}
+                      >
+                        <FaMinus />
+                      </button>
+                      <input type="text" value={quantities[index]} readOnly />
+                      <button
+                        className="increment-decrement-button increment1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleIncrease(index);
+                        }}
+                      >
+                        <FaPlus />
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
-  ))}
-</div>
 
       </div>
 
@@ -536,11 +480,7 @@ import { ToastContainer, toast } from 'react-toastify';
 </div>
 
 )}
-
-       
-      
-
-    </div>
+</div>
   {showSpinner && (
     <div style={{
       position: 'fixed',
@@ -582,9 +522,7 @@ import { ToastContainer, toast } from 'react-toastify';
     </div>
   </div>
 )}
-
     </>
   );
 }
-
 export default ProductItem1

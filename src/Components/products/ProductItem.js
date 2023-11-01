@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 
-import {FaRegHeart } from 'react-icons/fa';
+import {FaRegHeart,FaHeart } from 'react-icons/fa';
 import AppleIcon from '@mui/icons-material/Apple';
 import Carousel from 'react-bootstrap/Carousel';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -148,12 +148,16 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
 
   
   
-
+const[liked,setLiked] = useState(false)
   const handleLikeClick = (products, selectedIndex, event) => {
     setLikedProducts((prevLikedProducts) => [...prevLikedProducts, products[selectedIndex]]);
     toast.success("Item added to like list")
-    
+    setLiked(prevLiked => !prevLiked)
   };
+
+  // const handleremovelike = (products,selectedIndex,event)=>{
+  //   setLikedProducts((prevLikedProducts)=>)
+  // }
   const showLike = ()=>{
     setShowLikedProducts(true);
   }
@@ -355,8 +359,7 @@ const addToCart = (product, index) => {
     </Offcanvas.Header>
     <Offcanvas.Body>
     <Nav className="flex-column text-dark min-vh-100 bg_side">
-  
-    <Nav.Link className="text-dark link opened">
+    <Nav.Link className="text-dark link">
   {data.masterCategories && data.masterCategories.map((masterCategory) => (
   <Nav.Link className="text-dark link opened" onClick={() => handleMasterCategoryClick(masterCategory)}>
     <div className="d-flex flex-row justify-content-between">
@@ -527,7 +530,7 @@ const addToCart = (product, index) => {
                  
                   <div className="card-footer bg_foot">
                   {addedItems.includes(product.id) ? (
-    <div className="quantity-label">
+    <div className=" btn cart-button cart1" id="quantity-label">
       Item added to cart
     </div>
   ) : (
@@ -555,7 +558,10 @@ const addToCart = (product, index) => {
       
 
         {showPopup && selectedProduct && (
-          <div className="modal show" style={{ display: 'block', overflow: 'hidden' }}>
+          <div className="modal show" style={{ display: 'block', overflow: 'hidden' }} onClick={(e) => {
+            if (e.target.className === 'modal show') {
+              handleclose();
+            }}}>
   <div className="modal-dialog modal-dialog-centered">
     <div className="modal-content custom-modal">
       <div className="modal-header">
@@ -600,7 +606,7 @@ const addToCart = (product, index) => {
           </div>
           
           <div className="col-md-4">
-          <FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />
+          {liked?<FaHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)}  /> :<FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />}
             
             <h5 id="heading1">{selectedProduct.title}</h5>
             
@@ -632,15 +638,17 @@ const addToCart = (product, index) => {
             <div className="price1" style={{color:'#089b7d'}}>₹{selectedProduct.prize}</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <button
-  className="btn cart-button cart1"
-  onClick={(event) =>
-    handleAddClick(selectedProduct, selectedIndex, event)
-  }
-  id="pop_up_button"
-  style={{ color: 'white', paddingLeft: '12px', width: '300px', marginTop: '20px' }}
->
-  Add to shopping cart
-</button>
+            className={`btn cart-button cart1 ${addedItems.includes(selectedProduct.id) ? 'disabled' : ''}`}
+            onClick={(event) =>
+              !addedItems.includes(selectedProduct.id) && handleAddClick(selectedProduct, selectedIndex, event)
+            }
+            id="pop_up_button"
+            style={{ color: 'white', paddingLeft: '12px', width: '300px', marginTop: '20px' }}
+          >
+            {addedItems.includes(selectedProduct.id) ? 'Item added to cart' : 'Add to shopping cart'}
+          </button>
+
+
 
   <p id="available">Available product</p>
 </div>
