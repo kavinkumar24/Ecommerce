@@ -147,13 +147,30 @@ const { loading: productLoading, error: ProductError, data: ProductData } = useQ
   };
 
   
+  const [showStarburst, setShowStarburst] = useState(false);
   
-const[liked,setLiked] = useState(false)
+  const [liked, setLiked] = useState(new Array(products.length).fill(false));
+
   const handleLikeClick = (products, selectedIndex, event) => {
-    setLikedProducts((prevLikedProducts) => [...prevLikedProducts, products[selectedIndex]]);
-    toast.success("Item added to like list")
-    setLiked(prevLiked => !prevLiked)
+  const selectedProduct = products[selectedIndex];
+
+    setLikedProducts((prevLikedProducts) => {
+      if (!prevLikedProducts.includes(selectedProduct)) {
+        toast.success("Product liked");
+        return [...prevLikedProducts, selectedProduct];
+      } else {
+        toast.info("Like removed");
+        return prevLikedProducts.filter(product => product !== selectedProduct);
+      }
+    });
+  
+    setLiked(prevLiked => {
+      const newLiked = [...prevLiked];
+      newLiked[selectedIndex] = !newLiked[selectedIndex];
+      return newLiked;
+    });
   };
+  
 
   // const handleremovelike = (products,selectedIndex,event)=>{
   //   setLikedProducts((prevLikedProducts)=>)
@@ -161,8 +178,7 @@ const[liked,setLiked] = useState(false)
   const showLike = ()=>{
     setShowLikedProducts(true);
   }
-  
-  
+
   function handleSecondaryCategoryClick(secondaryCategory, masterCategory) {
    toast.info(secondaryCategory.category)
     setOpen({ ...open, [masterCategory.id]: false });
@@ -606,7 +622,9 @@ const addToCart = (product, index) => {
           </div>
           
           <div className="col-md-4">
-          {liked?<FaHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)}  /> :<FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />}
+          {liked[selectedIndex] ? <FaHeart className='liked' id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} /> : <FaRegHeart id="like" onClick={(event) => handleLikeClick(products, selectedIndex, event)} />}
+
+
             
             <h5 id="heading1">{selectedProduct.title}</h5>
             
